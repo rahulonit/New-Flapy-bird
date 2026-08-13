@@ -1,0 +1,1 @@
+const CACHE='flapverse-v2';const FILES=['./','./index.html','./styles.css','./ui-fixes.css','./app.js','./assets/neon-sky-city.png'];self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
