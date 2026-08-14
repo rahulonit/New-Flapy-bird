@@ -22,11 +22,11 @@
       <div class="ambient-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <header class="topbar">
         <button class="profile panel" data-open="characters"><span class="avatar home-avatar"></span><span><b>PLAYER ONE</b><small>LEVEL 15 · SKY PILOT</small></span></button>
-        <div class="wallet"><span class="panel currency-pill">🪙 <b data-coins>0</b><button data-open="shop" aria-label="Open coin shop">+</button></span><span class="panel currency-pill">💎 <b data-gems>0</b><button data-open="shop" aria-label="Open gem shop">+</button></span><button class="icon panel" data-open="settings" aria-label="Settings">⚙</button></div>
+        <div class="wallet"><span class="panel currency-pill">🪙 <b data-coins>0</b></span><span class="panel currency-pill">💎 <b data-gems>0</b></span><button class="icon panel settings-entry" data-open="settings" aria-label="Open settings"><img src="assets/Icons/Setting.png" alt="" /></button></div>
       </header>
       <nav class="side-nav panel">
         <small class="nav-label">FLIGHT DECK</small>
-        <button data-open="missions"><b class="nav-icon">✓</b><span>Missions</span><i>3</i></button>
+        <button data-open="missions"><b class="nav-icon">✓</b><span>Missions</span><i id="homeMissionBadge">0</i></button>
         <button data-open="characters"><b class="nav-icon">◆</b><span>Characters</span></button>
         <button data-open="worlds"><b class="nav-icon">◎</b><span>Worlds</span></button>
         <button data-open="shop"><b class="nav-icon">◇</b><span>Hangar Shop</span></button>
@@ -46,7 +46,7 @@
       <div class="hud top-left panel"><span>🏆</span><b id="score">0</b><small>BEST: <em id="best">0</em></small></div>
       <div id="combo" class="combo"><small>COMBO</small><b>0</b><em>PERFECT!</em></div>
       <div id="readyCountdown" class="ready-countdown">READY</div>
-      <div class="hud top-right"><span class="panel">🪙 <b id="runCoins">0</b></span><button id="pauseBtn" class="icon panel">Ⅱ</button></div>
+      <div class="hud top-right"><span class="panel">🪙 <b id="runCoins">0</b></span><button id="pauseBtn" class="icon panel" aria-label="Pause game"></button></div>
       <div class="hud bottom-left panel"><span>⚡</span><b id="distance">0m</b><small>FLY 2,000m</small></div>
       <div id="bossWarning" class="boss-warning">⚠ PORTAL SURGE</div>
       <div class="hint" id="hint">TAP TO FLAP • SWIPE TO CHANGE LANE</div>

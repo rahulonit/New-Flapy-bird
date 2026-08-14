@@ -285,6 +285,194 @@ button{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}butt
 .side-nav button span{position:relative;z-index:1;margin:0!important;font-size:clamp(12px,1.22vw,17px)!important;letter-spacing:1px!important;text-shadow:0 2px 2px #00152f,0 0 8px #20cfff55!important}
 .side-nav button i{z-index:2;right:-5px!important;top:-7px!important;width:30px;height:30px;display:grid;place-items:center;padding:0!important;border:2px solid #ff8b99;box-shadow:0 0 16px #ff324c;background:linear-gradient(#ff5062,#df1532)!important}
 @media(max-height:600px){.side-nav.panel{gap:7px!important;width:min(320px,24vw)!important}.side-nav button{min-height:51px!important;padding:4px 17px 4px 8px!important}.side-nav .nav-icon{width:40px!important;height:40px!important;min-width:40px!important;flex-basis:40px!important}}
+
+/* Refined menu: typography-led pills with artwork-only icons */
+.side-nav button{padding-right:58px!important;border:0!important;box-shadow:0 8px 16px #001128aa,inset 0 0 24px #128cff38,0 0 18px #13cfff35!important}
+.side-nav button:before{display:none!important}
+.side-nav button:hover,.side-nav button:focus-visible{box-shadow:0 9px 18px #001128bb,inset 0 0 25px #18a8ff55,0 0 24px #16dfff77!important}
+.side-nav .nav-icon{background-color:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;background-size:contain!important;filter:drop-shadow(0 3px 3px #001736) drop-shadow(0 0 7px #20dfff88) saturate(1.12)!important}
+.side-nav button span{font-size:clamp(16px,1.5vw,21px)!important;letter-spacing:1.15px!important}
+.side-nav button i{right:16px!important;top:50%!important;transform:translateY(-50%)!important;width:32px!important;height:32px!important;border:0!important;box-shadow:0 0 15px #ff324c!important}
+@media(max-height:600px){.side-nav button{padding-right:49px!important}.side-nav button span{font-size:clamp(14px,1.32vw,18px)!important}.side-nav button i{right:12px!important;width:28px!important;height:28px!important}}
+.side-nav button:nth-of-type(2) .nav-icon{background-image:url('assets/Characters/Nox.png')!important}
+.side-nav button:nth-of-type(4) .nav-icon{background-image:url('assets/Icons/Shop.png')!important}
+
+/* Requested open-ended menu treatment */
+.side-nav.panel{width:min(470px,32vw)!important}
+.side-nav button{border-radius:0!important;background:linear-gradient(90deg,rgba(8,84,159,.96) 0%,rgba(5,48,100,.72) 55%,rgba(3,22,57,0) 100%)!important;box-shadow:0 8px 16px #00112888,inset 18px 0 28px #128cff30!important}
+.side-nav button:hover,.side-nav button:focus-visible{background:linear-gradient(90deg,rgba(18,143,221,.98) 0%,rgba(7,65,127,.72) 58%,rgba(3,22,57,0) 100%)!important}
+.side-nav button span{font-size:clamp(32px,3vw,42px)!important;letter-spacing:1.4px!important;line-height:1!important}
+.side-nav button:nth-of-type(2) .nav-icon{background-image:url('assets/Characters/UFO.png')!important}
+.side-nav button i{right:40px!important}
+#homeMissionBadge[hidden]{display:none!important}
+@media(max-height:600px){.side-nav.panel{width:min(430px,31vw)!important}.side-nav button span{font-size:clamp(26px,2.55vw,35px)!important}.side-nav button i{right:32px!important}}
+
+/* Asset-only controls and larger home artwork */
+.side-nav button{min-height:86px!important;padding:7px 18px 7px 8px!important;gap:20px!important}
+.side-nav.panel{height:auto!important;max-height:none!important;grid-auto-rows:112px!important;align-content:start!important}
+.side-nav .nav-icon{width:72px!important;height:72px!important;min-width:72px!important;flex-basis:72px!important;background-color:transparent!important;box-shadow:none!important;filter:none!important}
+.side-nav button i{position:static!important;transform:none!important;width:44px!important;height:44px!important;min-width:44px!important;margin-left:2px!important;font-size:28px!important;line-height:1!important;box-shadow:none!important;background:#ef2848!important}
+.side-nav button span+ i{order:3}
+.back{font-size:0!important;background-color:transparent!important;background-image:url('assets/Icons/back.png')!important;background-position:center!important;background-repeat:no-repeat!important;background-size:76%!important;box-shadow:none!important;border:0!important}
+.wallet>.icon{font-size:0!important;background-color:transparent!important;background-image:url('assets/Icons/Setting.png')!important;background-position:center!important;background-repeat:no-repeat!important;background-size:82%!important;box-shadow:none!important;border:0!important}
+.setting>span:before{content:''!important;background-color:transparent!important;background-position:center!important;background-repeat:no-repeat!important;background-size:contain!important;border:0!important;box-shadow:none!important}
+.setting:nth-child(1)>span:before{background-image:url('assets/Icons/Music.png')!important}.setting:nth-child(2)>span:before{background-image:url('assets/Icons/Sound effects.png')!important}.setting:nth-child(3)>span:before{background-image:url('assets/Icons/Haptics.png')!important}.setting:nth-child(4)>span:before{background-image:url('assets/Icons/Control Hints.png')!important}
+@media(max-height:600px){.side-nav button{min-height:68px!important;gap:14px!important}.side-nav .nav-icon{width:56px!important;height:56px!important;min-width:56px!important;flex-basis:56px!important}.side-nav button i{width:36px!important;height:36px!important;min-width:36px!important;font-size:23px!important}}
 .character-thumb.locked .character-art{filter:grayscale(1) brightness(.45)}
 .character-thumb.locked small{color:#9fb2c8}
 .shop-empty{grid-column:1/-1;display:grid;place-items:center;min-height:120px;color:#9bc9e9;border:1px dashed #2576af;border-radius:14px}
+
+/* Critical mobile layout repair: keep every primary action inside landscape view. */
+.side-nav.panel{top:19%!important;width:min(380px,27vw)!important;height:min(67vh,370px)!important;max-height:calc(100vh - 21%)!important;grid-template-rows:repeat(5,minmax(0,1fr))!important;grid-auto-rows:auto!important;gap:5px!important}
+.side-nav button{min-height:0!important;height:100%!important;padding:4px 18px 4px 8px!important;gap:12px!important}
+.side-nav .nav-icon{width:50px!important;height:50px!important;min-width:50px!important;flex-basis:50px!important}
+.side-nav button span{font-size:clamp(18px,1.75vw,25px)!important;line-height:1.05!important}
+.side-nav button i{width:32px!important;height:32px!important;min-width:32px!important;font-size:20px!important}
+
+/* Preserve a readable, unclipped character picker area. */
+.character-layout{grid-template-rows:65% 35%!important}
+.character-strip{padding:10px 18px 22px!important;overflow-x:auto!important;overflow-y:visible!important}
+.character-thumb{min-height:0!important;padding:5px 6px 12px!important;grid-template-rows:minmax(0,1fr) 24px!important}
+.character-thumb small{position:relative;z-index:2;line-height:20px;white-space:nowrap}
+.selected-button{line-height:1!important;text-shadow:none!important;box-shadow:0 7px 0 #a64f00,0 0 26px #ffc31b99,inset 0 2px #fff!important}
+
+/* Asset-backed gameplay pause control. */
+#pauseBtn{font-size:0!important;background-color:transparent!important;background-image:url('assets/Icons/Pause.svg')!important;background-position:center!important;background-repeat:no-repeat!important;background-size:72%!important}
+
+@media(max-height:600px){
+  .side-nav.panel{top:19%!important;width:min(360px,27vw)!important;height:67vh!important;gap:4px!important}
+  .side-nav button{min-height:0!important;gap:10px!important}
+  .side-nav .nav-icon{width:46px!important;height:46px!important;min-width:46px!important;flex-basis:46px!important}
+  .side-nav button span{font-size:clamp(17px,1.65vw,23px)!important}
+  .side-nav button i{width:30px!important;height:30px!important;min-width:30px!important;font-size:19px!important}
+  .character-layout{grid-template-rows:64% 36%!important}
+  .character-strip{padding:6px 12px 18px!important}
+  .character-thumb{padding-bottom:10px!important}
+}
+
+/* Final home asset mapping. */
+.side-nav button:nth-of-type(1) .nav-icon{background-image:url('assets/Icons/Daily calender.png')!important}
+.side-nav button:nth-of-type(2) .nav-icon{background-image:url('assets/Characters/UFO.png')!important}
+.side-nav button:nth-of-type(3) .nav-icon{background-image:url('assets/Icons/World.png')!important}
+.side-nav button:nth-of-type(4) .nav-icon{background-image:url('assets/Icons/Shop.png')!important}
+.side-nav button:nth-of-type(5) .nav-icon{background-image:url('assets/Icons/Flag.png')!important}
+#playBtn.play{
+  width:min(590px,48vw)!important;
+  height:min(315px,46vh)!important;
+  min-height:0!important;
+  bottom:-7%!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background-color:transparent!important;
+  background-image:var(--play-art)!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+  box-shadow:none!important;
+  filter:drop-shadow(0 10px 11px #00122caa) drop-shadow(0 0 14px #ffc72d66);
+}
+#playBtn.play::after{display:none!important}
+#playBtn.play small{top:27%;color:#fff8bf;text-shadow:0 3px #382000;font-size:clamp(10px,1.05vw,15px);letter-spacing:2.6px}
+#playBtn.play b{position:absolute;top:56%;left:50%;transform:translate(-50%,-50%);padding:0;font-size:clamp(44px,4.5vw,66px);letter-spacing:3.2px}
+#playBtn.play span{position:absolute;top:49%;right:18%;padding:0;font-size:clamp(25px,2.7vw,38px)}
+#playBtn.play:active{transform:translateY(4px) scale(.98)!important;filter:brightness(.96) drop-shadow(0 5px 7px #00122caa)}
+.world-status{display:none!important}
+@media(max-height:600px){#playBtn.play{width:min(560px,46vw)!important;height:44vh!important;bottom:-7%!important}}
+
+/* World-specific daily reward artwork. */
+.daily.panel{
+  right:max(24px,env(safe-area-inset-right))!important;
+  bottom:-10vh!important;
+  width:min(396px,32.4vw)!important;
+  height:min(396px,58.8vh)!important;
+  min-width:0!important;
+  min-height:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background-color:transparent!important;
+  background-image:var(--reward-art)!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  mix-blend-mode:normal!important;
+  filter:none!important;
+}
+.daily.panel>*{display:none!important}
+.daily.panel:not(.claimed){animation:none!important}
+.daily.panel.claimed{opacity:1!important;filter:grayscale(.72) saturate(.45) drop-shadow(0 7px 9px #001126aa)!important}
+.daily.panel.claimed::after{content:'CLAIMED';position:absolute;left:50%;bottom:9%;transform:translateX(-50%);padding:6px 15px;border-radius:999px;background:#03152ddd;border:1px solid #73eaff;color:#dffbff;font-size:clamp(12px,1.15vw,17px);letter-spacing:1.8px;text-shadow:0 2px #00152f}
+@keyframes reward-float{50%{transform:translateY(-5px) scale(1.025);filter:drop-shadow(0 14px 14px #001126cc) drop-shadow(0 0 24px #ffd42d77)}}
+@media(max-height:600px){.daily.panel{width:min(372px,31.2vw)!important;height:56.4vh!important;bottom:-10vh!important}}
+
+/* Settings entry and landscape-first settings experience. */
+.wallet>.settings-entry{display:grid!important;place-items:center!important;width:76px!important;height:76px!important;min-width:76px!important;padding:0!important;background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+.wallet>.settings-entry img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 5px 5px #00142baa)}
+.wallet>.settings-entry:active img{transform:scale(.94)}
+.settings-shell{height:100%;max-width:1180px;margin:auto;display:grid;grid-template-rows:auto 1fr auto;gap:14px;overflow:hidden}
+.settings-summary{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:16px;min-height:76px;padding:8px 20px;border:2px solid #24ddff;border-radius:22px;background:linear-gradient(100deg,#0c4e91e8,#061b44ed 58%,#04122fec);box-shadow:0 0 18px #1acfff66,inset 0 0 20px #168cff26}
+.settings-summary>img{width:60px;height:60px;object-fit:contain}.settings-summary>span{display:grid;gap:3px}.settings-summary b{font-size:clamp(20px,2vw,29px);letter-spacing:1.5px}.settings-summary small{font:600 clamp(12px,1vw,15px) 'Trebuchet MS',Arial,sans-serif;color:#9ddcff}.settings-summary>em{font:700 13px 'Trebuchet MS',Arial,sans-serif;font-style:normal;color:#8dff91;padding:8px 13px;border:1px solid #45e86a;border-radius:999px;background:#0d5a2c88}
+.settings-shell .settings-card{max-width:none!important;height:auto!important;min-height:0!important;display:grid!important;grid-template-columns:1fr 1fr!important;grid-template-rows:1fr 1fr!important;gap:14px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important}
+.settings-shell .setting{position:relative;display:grid!important;grid-template-columns:72px 1fr 112px;align-items:center;gap:16px;min-height:0!important;padding:14px 18px!important;border:2px solid #21cfff!important;border-radius:24px!important;background:linear-gradient(135deg,#104d8df0,#061d4bed 57%,#030e29f5)!important;box-shadow:0 8px 16px #00122f99,inset 0 0 22px #168cff25!important;overflow:hidden}
+.settings-shell .setting:after{content:'';position:absolute;inset:2px;border-radius:20px;border-top:1px solid #a7f7ff55;pointer-events:none}.settings-shell .setting-art{position:relative;z-index:1;width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 4px 5px #00172f)}
+.settings-shell .setting>span{position:relative;z-index:1;display:grid!important;gap:5px!important;min-width:0}.settings-shell .setting>span:before{display:none!important}.settings-shell .setting b{font-size:clamp(19px,1.75vw,26px);letter-spacing:.5px}.settings-shell .setting small{font:600 clamp(12px,1vw,15px) 'Trebuchet MS',Arial,sans-serif;color:#9bcdec;white-space:normal}
+.settings-shell .setting-toggle{position:relative;z-index:2;width:108px!important;height:52px!important;min-height:52px!important;padding:0!important;border:2px solid #758da8!important;border-radius:28px!important;background:linear-gradient(#344c69,#14263e)!important;box-shadow:inset 0 0 9px #00132f,0 4px 7px #001025aa!important;color:#bdd1e7!important}
+.settings-shell .setting-toggle i{position:absolute!important;left:6px!important;top:5px!important;width:38px!important;height:38px!important;border-radius:50%!important;background:linear-gradient(#fff,#c7e8ff)!important;box-shadow:0 3px 5px #00173388!important;transition:left .22s ease!important}.settings-shell .setting-toggle em{position:absolute!important;right:14px!important;left:auto!important;top:15px!important;font:900 13px 'Trebuchet MS',Arial,sans-serif;font-style:normal!important;letter-spacing:.6px}
+.settings-shell .setting-toggle.on{border-color:#86ff6f!important;background:linear-gradient(#43ee2e,#0dae18)!important;box-shadow:0 0 17px #35ff3699,inset 0 0 8px #fff6!important;color:#fff!important}.settings-shell .setting-toggle.on i{left:62px!important}.settings-shell .setting-toggle.on em{left:14px!important;right:auto!important}
+.settings-danger{display:grid;grid-template-columns:1fr auto;align-items:center;gap:20px;min-height:70px;padding:10px 14px 10px 22px;border:2px solid #ff4962;border-radius:22px;background:linear-gradient(100deg,#4a1228e8,#220a1aed);box-shadow:0 0 16px #ff274e44,inset 0 0 18px #ff315322}.settings-danger>span{display:grid;gap:3px}.settings-danger b{font-size:18px;color:#ffccd4}.settings-danger small{font:600 12px 'Trebuchet MS',Arial,sans-serif;color:#dc9daa}.settings-danger .reset-progress{grid-column:auto!important;margin:0!important;min-height:48px;padding:8px 20px!important;white-space:nowrap}
+@media(max-height:600px){.wallet>.settings-entry{width:64px!important;height:64px!important;min-width:64px!important}.settings-shell{gap:9px}.settings-summary{grid-template-columns:50px 1fr auto;min-height:58px;padding:5px 14px}.settings-summary>img{width:48px;height:48px}.settings-shell .settings-card{gap:9px!important}.settings-shell .setting{grid-template-columns:54px 1fr 96px;padding:7px 12px!important;gap:11px}.settings-shell .setting-art{width:52px;height:52px}.settings-shell .setting-toggle{width:94px!important;height:44px!important;min-height:44px!important}.settings-shell .setting-toggle i{width:32px!important;height:32px!important}.settings-shell .setting-toggle.on i{left:56px!important}.settings-shell .setting-toggle em{top:12px!important}.settings-danger{min-height:56px;padding:6px 10px 6px 16px}.settings-danger .reset-progress{min-height:42px}}
+
+/* Use the supplied ON/OFF control artwork and compact the Settings header. */
+#panelScreen[data-menu="settings"]>header{height:10%!important;min-height:68px!important;padding-top:4px!important;padding-bottom:4px!important}
+#panelScreen[data-menu="settings"] .panel-content{height:90%!important;padding-top:10px!important}
+#panelScreen[data-menu="settings"]>header h1{font-size:clamp(27px,2.6vw,38px)!important;padding-top:4px!important;padding-bottom:4px!important}
+.settings-shell .setting-toggle{width:132px!important;height:52px!important;min-width:132px!important;background-color:transparent!important;background-image:url('assets/Icons/On-Off Switch.png')!important;background-repeat:no-repeat!important;background-size:100% 200%!important;background-position:center bottom!important;border:0!important;border-radius:0!important;box-shadow:none!important;filter:drop-shadow(0 4px 5px #00142caa)!important}
+.settings-shell .setting-toggle.on{background-color:transparent!important;background-image:url('assets/Icons/On-Off Switch.png')!important;background-position:center top!important;border:0!important;box-shadow:none!important}
+.settings-shell .setting-toggle i,.settings-shell .setting-toggle em{display:none!important}
+.settings-shell .setting-toggle{overflow:hidden!important;background-image:none!important}
+.settings-shell .setting-toggle.on{background-image:none!important}
+.settings-shell .setting-toggle .switch-art{position:absolute;left:0;width:100%;height:200%;max-width:none;object-fit:fill;display:block!important;pointer-events:none}.settings-shell .setting-toggle.on .switch-art{top:0}.settings-shell .setting-toggle:not(.on) .switch-art{top:-100%}
+@media(max-height:600px){#panelScreen[data-menu="settings"]>header{height:11%!important;min-height:58px!important}#panelScreen[data-menu="settings"] .panel-content{height:89%!important;padding-top:7px!important}.settings-shell .setting{grid-template-columns:54px 1fr 112px}.settings-shell .setting-toggle{width:112px!important;min-width:112px!important;height:44px!important}}
+
+/* Final Settings refinement: generous header, balanced cards, larger iconography. */
+#panelScreen[data-menu="settings"]>header{height:13%!important;min-height:82px!important;padding:7px max(32px,env(safe-area-inset-left))!important}
+#panelScreen[data-menu="settings"] .panel-content{height:87%!important;padding:14px 32px 20px!important}
+#panelScreen[data-menu="settings"]>header h1{font-size:clamp(34px,3.4vw,50px)!important;padding:7px 64px!important;line-height:1!important}
+#panelScreen[data-menu="settings"] .back{width:62px!important;height:62px!important;min-width:62px!important;min-height:62px!important}
+.settings-shell{grid-template-rows:88px minmax(0,1fr)!important;gap:16px!important;max-width:1220px!important}
+.settings-summary{min-height:88px!important;padding:10px 24px!important;grid-template-columns:76px 1fr auto!important}.settings-summary>img{width:72px!important;height:72px!important}.settings-summary b{font-size:clamp(23px,2.15vw,31px)!important}
+.settings-shell .settings-card{gap:16px!important}
+.settings-shell .setting{grid-template-columns:88px minmax(0,1fr) 132px!important;gap:20px!important;padding:22px 24px!important;align-items:center!important}
+.settings-shell .setting-art{width:82px!important;height:82px!important}
+.settings-shell .setting b{font-size:clamp(22px,2vw,29px)!important}.settings-shell .setting small{font-size:clamp(13px,1.12vw,16px)!important;line-height:1.25!important}
+@media(max-height:600px){#panelScreen[data-menu="settings"]>header{height:13%!important;min-height:66px!important}#panelScreen[data-menu="settings"] .panel-content{height:87%!important;padding:9px 24px 14px!important}#panelScreen[data-menu="settings"]>header h1{font-size:clamp(30px,3.1vw,43px)!important;padding:5px 52px!important}#panelScreen[data-menu="settings"] .back{width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important}.settings-shell{grid-template-rows:68px minmax(0,1fr)!important;gap:10px!important}.settings-summary{min-height:68px!important;grid-template-columns:58px 1fr auto!important;padding:6px 16px!important}.settings-summary>img{width:56px!important;height:56px!important}.settings-shell .settings-card{gap:10px!important}.settings-shell .setting{grid-template-columns:68px minmax(0,1fr) 112px!important;gap:14px!important;padding:12px 16px!important}.settings-shell .setting-art{width:64px!important;height:64px!important}}
+
+/* Settings header and control polish. */
+#panelScreen[data-menu="settings"]>header{justify-content:flex-start!important;gap:18px!important;background:transparent!important;border-bottom:0!important;box-shadow:none!important}
+#panelScreen[data-menu="settings"]>header h1{position:static!important;left:auto!important;transform:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;text-shadow:0 3px #0a5ec5!important;text-align:left!important}
+#panelScreen[data-menu="settings"] #panelCurrency{margin-left:auto!important}
+#panelScreen[data-menu="settings"] .back{width:100px!important;height:100px!important;min-width:100px!important;min-height:100px!important;background-size:90%!important}
+.settings-shell .setting{grid-template-columns:104px minmax(0,1fr) 150px!important;padding:10px!important;gap:20px!important}
+.settings-shell .setting-art{width:98px!important;height:98px!important}
+.settings-shell .setting-toggle{width:150px!important;min-width:150px!important;height:60px!important;min-height:60px!important;filter:none!important}
+@media(max-height:600px){#panelScreen[data-menu="settings"]>header{gap:14px!important}#panelScreen[data-menu="settings"] .back{width:82px!important;height:82px!important;min-width:82px!important;min-height:82px!important}#panelScreen[data-menu="settings"]>header h1{font-size:clamp(31px,3.2vw,44px)!important}.settings-shell .setting{grid-template-columns:78px minmax(0,1fr) 126px!important;padding:10px!important;gap:14px!important}.settings-shell .setting-art{width:76px!important;height:76px!important}.settings-shell .setting-toggle{width:126px!important;min-width:126px!important;height:50px!important;min-height:50px!important}}
+
+/* Reusable section-screen design system. */
+#panelScreen>header{height:13%!important;min-height:72px!important;display:flex!important;justify-content:flex-start!important;align-items:center!important;gap:18px!important;padding:7px max(28px,env(safe-area-inset-left))!important;background:transparent!important;border:0!important;box-shadow:none!important}
+#panelScreen>header .back{width:82px!important;height:82px!important;min-width:82px!important;min-height:82px!important;padding:0!important;background-size:90%!important}
+#panelScreen[data-menu="settings"]>header .back{width:100px!important;height:100px!important;min-width:100px!important;min-height:100px!important}
+#panelScreen>header h1{position:static!important;left:auto!important;transform:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;font-size:clamp(31px,3.1vw,46px)!important;line-height:1!important;text-align:left!important;text-shadow:0 3px #0a5ec5!important}
+#panelScreen .header-currency{margin-left:auto!important;display:flex;gap:10px;align-items:center}
+#panelScreen .panel-content{height:87%!important;padding:12px 28px 18px!important}
+:is(.world-card,.character-thumb,.mission-row,.offer-card,.coin-packs button,.leaderboard-list .row,.settings-shell .setting){padding:10px!important;border:2px solid #25d9ff!important;border-radius:22px!important;background:linear-gradient(135deg,#104d8df0,#061d4bed 58%,#030e29f5)!important;box-shadow:0 8px 16px #00122f99,inset 0 0 22px #168cff25!important}
+:is(.world-card,.character-thumb,.mission-row,.offer-card,.coin-packs button,.leaderboard-list .row):not(:disabled):active{transform:translateY(3px) scale(.985)!important;filter:brightness(1.1)}
+.world-card.selected,.character-thumb.selected{border-color:#ffe44b!important;box-shadow:0 0 24px #ffd52b99,inset 0 0 24px #ffca2238!important}
+.mission-icon{width:62px!important;height:62px!important;min-width:62px!important;border:0!important;background-color:transparent!important;background-size:contain!important;box-shadow:none!important;font-size:34px!important}
+.mission-go,.progress-reward,.offer-card button,.coin-packs small{min-height:48px!important;border-radius:16px!important}
+.leaderboard-head{padding:12px 18px!important;border:2px solid #25d9ff!important;border-radius:20px!important;background:linear-gradient(100deg,#104d8de8,#041532ef)!important}.leaderboard-list{max-width:1050px!important}.leaderboard-list .row{min-height:58px!important;font-size:clamp(16px,1.5vw,22px)!important}
+.character-thumb .character-art{width:92px!important;height:80px!important}.shop-tabs button{border-radius:18px!important}.shop-content>h3{font-size:clamp(20px,2vw,29px)!important;letter-spacing:1px}
+@media(max-height:600px){#panelScreen>header{height:13%!important;min-height:62px!important;gap:14px!important;padding:5px 24px!important}#panelScreen>header .back{width:68px!important;height:68px!important;min-width:68px!important;min-height:68px!important}#panelScreen>header h1{font-size:clamp(27px,2.8vw,39px)!important}#panelScreen .panel-content{height:87%!important;padding:8px 24px 13px!important}:is(.world-card,.character-thumb,.mission-row,.offer-card,.coin-packs button,.leaderboard-list .row,.settings-shell .setting){padding:10px!important}#panelScreen[data-menu="settings"]>header .back{width:82px!important;height:82px!important;min-width:82px!important;min-height:82px!important}}
