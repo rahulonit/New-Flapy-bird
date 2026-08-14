@@ -62,3 +62,62 @@ workflows:
     artifacts:
       - android/app/build/outputs/**/*.apk
       - android/app/build/reports/tests/**/*.html
+
+  ios-debug:
+    name: Flapverse iOS Debug
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+
+    environment:
+      node: "22"
+      xcode: latest
+      cocoapods: default
+      vars:
+        BUNDLE_ID: "com.flapverse.neonflight"
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
+
+    cache:
+      cache_paths:
+        - $HOME/.npm
+        - $HOME/Library/Caches/CocoaPods
+
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: '*'
+          include: true
+          source: true
+      cancel_previous_builds: true
+
+    scripts:
+      - name: Install JavaScript dependencies
+        script: npm install
+
+      - name: Prepare web assets
+        script: |
+          rm -rf www
+          mkdir -p www
+          cp index.html app.js styles.css ui-fixes.css sw.js manifest.webmanifest www/
+          cp -R assets www/assets
+
+      - name: Sync Capacitor iOS project
+        script: npx cap sync ios
+
+      - name: Build unsigned iOS app
+        script: |
+          xcodebuild \
+            -workspace "$CM_BUILD_DIR/$XCODE_WORKSPACE" \
+            -scheme "$XCODE_SCHEME" \
+            -configuration Debug \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$CM_BUILD_DIR/build/ios" \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+    artifacts:
+      - build/ios/Build/Products/**/*.app
+      - build/ios/Build/Products/**/*.dSYM
+      - /tmp/xcodebuild_logs/*.log
