@@ -1,0 +1,6 @@
+workflows:
+  hello-world:
+    name: Hello world workflow
+    scripts:
+      - name: Verify Codemagic configuration
+        script: echo "Hello World!"
