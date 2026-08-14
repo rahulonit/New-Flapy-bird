@@ -15,24 +15,30 @@
   <div id="rotate"><div class="rotate-phone">↻</div><h1>Rotate to landscape</h1><p>Flapverse is built for two-handed landscape play.</p></div>
   <main id="app">
     <section id="home" class="screen active">
+      <video id="homeBackground" class="home-video" muted playsinline loop preload="auto" poster="assets/MetroCity-poster.jpg" aria-hidden="true">
+        <source src="assets/MetroCity-pingpong.mp4" type="video/mp4" />
+      </video>
       <div class="home-shade"></div>
+      <div class="ambient-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <header class="topbar">
-        <button class="profile panel"><span class="avatar atlas-character atlas-bird"></span><span><b>PLAYER ONE</b><small>LV. 15</small></span></button>
+        <button class="profile panel"><span class="avatar home-avatar"></span><span><b>PLAYER ONE</b><small>LEVEL 15 · SKY PILOT</small></span></button>
         <div class="wallet"><span class="panel currency-pill">🪙 <b data-coins>0</b><button aria-label="Buy coins">+</button></span><span class="panel currency-pill">💎 <b>320</b><button aria-label="Buy gems">+</button></span><button class="icon panel" data-open="settings" aria-label="Settings">⚙</button></div>
       </header>
       <nav class="side-nav panel">
-        <button data-open="missions">✓ <span>Missions</span><i>3</i></button>
-        <button data-open="characters">🐦 <span>Characters</span></button>
-        <button data-open="worlds">◉ <span>Worlds</span></button>
-        <button data-open="shop">🛒 <span>Shop</span></button>
-        <button data-open="leaderboard">♛ <span>Leaderboard</span></button>
+        <small class="nav-label">FLIGHT DECK</small>
+        <button data-open="missions"><b class="nav-icon">✓</b><span>Missions</span><i>3</i></button>
+        <button data-open="characters"><b class="nav-icon">◆</b><span>Characters</span></button>
+        <button data-open="worlds"><b class="nav-icon">◎</b><span>Worlds</span></button>
+        <button data-open="shop"><b class="nav-icon">◇</b><span>Hangar Shop</span></button>
+        <button data-open="leaderboard"><b class="nav-icon">♛</b><span>Leaderboard</span></button>
       </nav>
       <div class="hero">
         <div class="logo asset-logo final-logo" aria-label="Flapverse 3D"></div>
         <div class="hero-bird asset-bird"></div>
-        <button id="playBtn" class="play">PLAY <span>▶</span></button>
+        <div class="world-status"><span>ACTIVE WORLD</span><b id="homeWorldName">METRO CITY</b></div>
+        <button id="playBtn" class="play"><small>START FLIGHT</small><b>PLAY</b><span>▶</span></button>
       </div>
-      <aside class="daily panel"><i class="notification">1</i><span class="chest atlas-character atlas-chest"></span><b>DAILY REWARD</b><small>Ready to claim!</small></aside>
+      <button class="daily panel" data-open="missions"><i class="notification">1</i><span class="chest asset-coin-chest"></span><b>DAILY REWARD</b><small>Ready to claim</small></button>
     </section>
 
     <section id="game" class="screen">

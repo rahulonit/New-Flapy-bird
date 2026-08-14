@@ -1,11 +1,11 @@
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 const screens=$$('.screen'); const canvas=$('#gameCanvas'),ctx=canvas.getContext('2d');
-const bg=new Image();bg.src='assets/neon-sky-city.png';
+const bg=new Image();bg.src='assets/MetroCity.png';
 const save=JSON.parse(localStorage.getItem('flapverse-save')||'{"best":0,"coins":368,"world":1,"bird":0}');
 let state='home', running=false, paused=false, last=0, raf, W=0,H=0,dpr=1;
 let bird, obstacles=[], particles=[], score=0,runCoins=0,combo=0,distance=0,speed=340,spawnIn=0;
 function persist(){localStorage.setItem('flapverse-save',JSON.stringify(save));$$('[data-coins]').forEach(x=>x.textContent=save.coins.toLocaleString())}persist();
-function show(id){screens.forEach(s=>s.classList.remove('active'));$('#'+id).classList.add('active');state=id}
+function show(id){screens.forEach(s=>s.classList.remove('active'));$('#'+id).classList.add('active');state=id;if(id==='home')updateHomeWorld();else homeVideo?.pause()}
 function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}addEventListener('resize',resize);resize();
 function reset(){score=runCoins=combo=distance=0;speed=Math.max(330,W*.2);spawnIn=1;obstacles=[];particles=[];bird={x:W*.32,y:H*.48,vy:0,lane:1,targetX:W*.32,rot:0,alive:true};updateHud()}
 function start(){show('game');resize();reset();running=true;paused=false;last=performance.now();$('#paused').classList.add('hidden');$('#hint').style.opacity=1;setTimeout(()=>$('#hint').style.opacity=0,2600);cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
@@ -30,8 +30,27 @@ function draw(t){ctx.clearRect(0,0,W,H);if(bg.complete)ctx.drawImage(bg,0,0,W,H)
 function drawPillar(o){const top=o.y-o.gap/2,bottom=o.y+o.gap/2,w=o.w;const grad=ctx.createLinearGradient(o.x,0,o.x+w,0);grad.addColorStop(0,'#08152c');grad.addColorStop(.45,'#173e72');grad.addColorStop(.7,'#07152e');grad.addColorStop(1,'#020817');ctx.fillStyle=grad;ctx.shadowColor='#16bfff';ctx.shadowBlur=12;roundRect(o.x,-25,w,top+25,13);ctx.fill();roundRect(o.x,bottom,w,H-bottom+25,13);ctx.fill();ctx.shadowColor='#f330ff';ctx.shadowBlur=18;ctx.fillStyle='#ec3bff';ctx.fillRect(o.x-7,top-13,w+14,13);ctx.fillRect(o.x-7,bottom,w+14,13);ctx.shadowColor='#25deff';ctx.fillStyle='#21dfff';ctx.fillRect(o.x+10,top-28,w-20,8);ctx.fillRect(o.x+10,bottom+15,w-20,8);ctx.shadowBlur=0;if(o.coin&&!o.scored){ctx.save();ctx.translate(o.x+w/2,o.y);ctx.scale(.65+.2*Math.sin(o.phase),1);ctx.fillStyle='#ffd036';ctx.strokeStyle='#fff19a';ctx.lineWidth=4;ctx.beginPath();ctx.arc(0,0,18,0,7);ctx.fill();ctx.stroke();ctx.fillStyle='#ed9412';ctx.font='bold 20px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('★',0,1);ctx.restore()}}
 function drawBird(t){ctx.save();ctx.translate(bird.x,bird.y);ctx.rotate(bird.rot);ctx.scale(.5,.5);ctx.shadowColor='#25e4ff';ctx.shadowBlur=22;ctx.fillStyle='#159be9';ctx.beginPath();ctx.ellipse(0,0,43,32,0,0,7);ctx.fill();ctx.fillStyle='#0b62c1';ctx.beginPath();ctx.ellipse(-25,8,29,13,-.35,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(21,-9,15,18,0,0,7);ctx.fill();ctx.fillStyle='#07162f';ctx.beginPath();ctx.arc(27,-9,6,0,7);ctx.fill();ctx.fillStyle='#ff9f00';ctx.beginPath();ctx.moveTo(40,-2);ctx.lineTo(61,6);ctx.lineTo(40,13);ctx.fill();ctx.fillStyle='#39d7ff';for(let i=0;i<3;i++){ctx.beginPath();ctx.ellipse(-10+i*10,-31-i%2*4,8,15,-.4+i*.25,0,7);ctx.fill()}ctx.restore()}
 
-const worldData=[['world-forest','MYSTIC FOREST','8,742'],['world-metro','METRO CITY','15,630'],['world-cyber','CYBER CITY','23,918'],['world-ocean','OCEAN REALM','LOCKED'],['world-space','SPACE ODYSSEY','LOCKED']];
-const characterData=[['atlas-bird','NEON BIRD','EPIC'],['atlas-dragon','EMBER','LEGENDARY'],['atlas-robot','BYTE','RARE'],['atlas-bat','NOX','EPIC'],['atlas-ufo','UFO','RARE']];
+const worldData=[['world-forest','MYSTIC FOREST','8,742'],['world-metro','METRO CITY','15,630'],['world-space','SPACE ODYSSEY','23,918'],['world-cyber','CYBER CITY','LOCKED'],['world-ocean','OCEAN REALM','LOCKED']];
+const homeWorlds=[
+  {name:'MYSTIC FOREST',video:'assets/MysticForest-pingpong.mp4',poster:'assets/MysticForest-poster.jpg'},
+  {name:'METRO CITY',video:'assets/MetroCity-pingpong.mp4',poster:'assets/MetroCity-poster.jpg'},
+  {name:'SPACE ODYSSEY',video:'assets/SpaceOdyssey-pingpong.mp4',poster:'assets/SpaceOdyssey-poster.jpg'}
+];
+const characterData=[['character-bird','NEON BIRD','EPIC'],['character-ember','EMBER','LEGENDARY'],['character-byte','BYTE','RARE'],['character-nox','NOX','EPIC'],['character-ufo','UFO','RARE'],['character-rocket','ROCKET','LEGENDARY']];
+const homeVideo=$('#homeBackground');
+function updateHomeWorld(){
+  const selected=homeWorlds[Math.min(save.world,homeWorlds.length-1)]||homeWorlds[1];
+  $('#homeWorldName').textContent=selected.name;
+  if(homeVideo.dataset.src!==selected.video){
+    homeVideo.dataset.src=selected.video;
+    homeVideo.poster=selected.poster;
+    homeVideo.src=selected.video;
+    homeVideo.load();
+  }
+  homeVideo.play().catch(()=>{});
+}
+homeVideo.addEventListener('loadeddata',()=>homeVideo.classList.add('ready'));
+homeVideo.addEventListener('waiting',()=>homeVideo.classList.remove('ready'));
 const menus={
  worlds:{title:'WORLD SELECT',html:()=>`<div class="world-layout"><div class="world-cards">${worldData.map((x,i)=>`<button class="world-card ${save.world===i?'selected':''} ${i>2?'locked':''}" data-world="${i}"><span class="world-number">${i+1}</span><span class="world-art ${x[0]}"></span><b>${x[1]}</b><small>${i>2?'🔒 LOCKED':'BEST SCORE'}</small><em>${x[2]}</em></button>`).join('')}</div><div class="total-progress"><b>TOTAL PROGRESS</b><span>⭐ 9 / 25</span><progress value="9" max="25"></progress><i>🎁</i></div></div>`},
  characters:{title:'CHARACTER SELECT',html:()=>{const c=characterData[save.bird]||characterData[0];return `<div class="character-layout"><div class="character-stage"><div class="character-glow"></div><span id="characterHero" class="atlas-character ${c[0]}"></span></div><div class="character-info"><h2 id="characterName">${c[1]}</h2><label id="characterRarity">${c[2]}</label><div class="stat"><b>Speed</b><i><span style="width:72%"></span></i></div><div class="stat boost"><b>Boost</b><i><span style="width:68%"></span></i></div><div class="stat control"><b>Control</b><i><span style="width:78%"></span></i></div><button class="selected-button">SELECTED ✓</button></div><div class="character-strip">${characterData.map((x,i)=>`<button data-character="${i}" class="character-thumb ${save.bird===i?'selected':''}"><span class="atlas-character ${x[0]}"></span><small>${x[1]}</small></button>`).join('')}</div></div>`}},
@@ -43,4 +62,4 @@ const menus={
 function openMenu(name){const m=menus[name];if(!m)return;$('#panelTitle').textContent=m.title;$('#panelCurrency').innerHTML=name==='characters'?`<span class="panel currency-pill">💎 <b>320</b><button>+</button></span>`:name==='missions'||name==='settings'||name==='leaderboard'?'':`<span class="panel currency-pill">🪙 <b data-coins>${save.coins.toLocaleString()}</b><button>+</button></span>${name==='shop'?'<span class="panel currency-pill">💎 <b>320</b><button>+</button></span>':''}`;$('#panelContent').innerHTML=m.html();show('panelScreen');bindPanel(name)}
 function bindPanel(name){$$('.toggle').forEach(b=>b.onclick=()=>{b.textContent=b.textContent==='ON'?'OFF':'ON';b.classList.toggle('toggle')});$$('[data-world]').forEach(b=>b.onclick=()=>{const i=+b.dataset.world;if(i>2)return;save.world=i;persist();openMenu('worlds')});$$('[data-character]').forEach(b=>b.onclick=()=>{save.bird=+b.dataset.character;persist();openMenu('characters')});$$('.mission-go').forEach(b=>b.onclick=()=>start());}
 $$('[data-open]').forEach(b=>b.onclick=()=>openMenu(b.dataset.open));$('.back').onclick=()=>show('home');$$('[data-home]').forEach(b=>b.onclick=()=>{running=false;show('home')});$('#playBtn').onclick=start;$('#retryBtn').onclick=start;$('#adBtn').onclick=()=>{if($('#adBtn').disabled)return;save.coins+=runCoins;persist();$('#rewardCoins').textContent=runCoins*2;$('#adBtn').disabled=true;$('#adBtn').classList.add('claimed');$('#adBtn').innerHTML='✓ REWARD DOUBLED'};$('#pauseBtn').onclick=()=>{paused=true;$('#paused').classList.remove('hidden')};$('#resumeBtn').onclick=()=>{paused=false;last=performance.now();$('#paused').classList.add('hidden')};
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){paused=true;$('#paused').classList.remove('hidden')}});if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){homeVideo.pause();if(running){paused=true;$('#paused').classList.remove('hidden')}}else if(state==='home'){homeVideo.play().catch(()=>{})}});updateHomeWorld();if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
