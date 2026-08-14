@@ -21,8 +21,8 @@
       <div class="home-shade"></div>
       <div class="ambient-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <header class="topbar">
-        <button class="profile panel"><span class="avatar home-avatar"></span><span><b>PLAYER ONE</b><small>LEVEL 15 · SKY PILOT</small></span></button>
-        <div class="wallet"><span class="panel currency-pill">🪙 <b data-coins>0</b><button aria-label="Buy coins">+</button></span><span class="panel currency-pill">💎 <b>320</b><button aria-label="Buy gems">+</button></span><button class="icon panel" data-open="settings" aria-label="Settings">⚙</button></div>
+        <button class="profile panel" data-open="characters"><span class="avatar home-avatar"></span><span><b>PLAYER ONE</b><small>LEVEL 15 · SKY PILOT</small></span></button>
+        <div class="wallet"><span class="panel currency-pill">🪙 <b data-coins>0</b><button data-open="shop" aria-label="Open coin shop">+</button></span><span class="panel currency-pill">💎 <b data-gems>0</b><button data-open="shop" aria-label="Open gem shop">+</button></span><button class="icon panel" data-open="settings" aria-label="Settings">⚙</button></div>
       </header>
       <nav class="side-nav panel">
         <small class="nav-label">FLIGHT DECK</small>
@@ -38,13 +38,14 @@
         <div class="world-status"><span>ACTIVE WORLD</span><b id="homeWorldName">METRO CITY</b></div>
         <button id="playBtn" class="play"><small>START FLIGHT</small><b>PLAY</b><span>▶</span></button>
       </div>
-      <button class="daily panel" data-open="missions"><i class="notification">1</i><span class="chest asset-coin-chest"></span><b>DAILY REWARD</b><small>Ready to claim</small></button>
+      <button class="daily panel" data-daily><i class="notification">1</i><span class="chest asset-coin-chest"></span><b>DAILY REWARD</b><small>Tap to claim</small></button>
     </section>
 
     <section id="game" class="screen">
       <canvas id="gameCanvas"></canvas>
       <div class="hud top-left panel"><span>🏆</span><b id="score">0</b><small>BEST: <em id="best">0</em></small></div>
       <div id="combo" class="combo"><small>COMBO</small><b>0</b><em>PERFECT!</em></div>
+      <div id="readyCountdown" class="ready-countdown">READY</div>
       <div class="hud top-right"><span class="panel">🪙 <b id="runCoins">0</b></span><button id="pauseBtn" class="icon panel">Ⅱ</button></div>
       <div class="hud bottom-left panel"><span>⚡</span><b id="distance">0m</b><small>FLY 2,000m</small></div>
       <div id="bossWarning" class="boss-warning">⚠ PORTAL SURGE</div>
@@ -53,7 +54,7 @@
     </section>
 
     <section id="gameover" class="screen overlay-screen">
-      <div class="gameover-card panel"><h1>GAME OVER</h1><div class="gameover-body"><div class="result"><small>SCORE</small><b id="finalScore">0</b><em id="newBest">NEW BEST!</em></div><div class="crashed-bird asset-gameover"></div></div><div class="reward">REWARD <b>🪙 <span id="rewardCoins">0</span></b><b>💎 <span id="rewardGems">0</span></b></div><div class="actions"><button data-home>⌂ HOME</button><button id="retryBtn" class="primary">↻ RETRY</button><button id="adBtn" class="ad-button">▣ WATCH AD <small>×2 REWARD</small></button></div></div>
+      <div class="gameover-card panel"><h1>GAME OVER</h1><div class="gameover-body"><div class="result"><small>SCORE</small><b id="finalScore">0</b><em id="newBest">NEW BEST!</em></div><div class="crashed-bird asset-gameover"></div></div><div class="reward">REWARD <b>🪙 <span id="rewardCoins">0</span></b><b>💎 <span id="rewardGems">0</span></b></div><div class="actions"><button data-home>⌂ HOME</button><button id="retryBtn" class="primary">↻ RETRY</button><button id="adBtn" class="ad-button">CLAIM BONUS <small>×2 REWARD</small></button></div></div>
     </section>
 
     <section id="panelScreen" class="screen menu-screen">
@@ -61,6 +62,7 @@
       <div id="panelContent" class="panel-content"></div>
     </section>
   </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
 </body>
 </html>
