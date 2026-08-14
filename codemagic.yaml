@@ -117,7 +117,24 @@ workflows:
             CODE_SIGNING_ALLOWED=NO \
             build
 
+      - name: Package iOS app as ZIP
+        script: |
+          APP_PATH=$(find "$CM_BUILD_DIR/build/ios/Build/Products/Debug-iphoneos" \
+            -maxdepth 1 -type d -name '*.app' | head -n 1)
+
+          if [ -z "$APP_PATH" ]; then
+            echo "No iOS .app bundle was produced."
+            exit 1
+          fi
+
+          ditto -c -k --sequesterRsrc --keepParent \
+            "$APP_PATH" \
+            "$CM_BUILD_DIR/build/ios/Flapverse-iOS.zip"
+
+          test -s "$CM_BUILD_DIR/build/ios/Flapverse-iOS.zip"
+
     artifacts:
+      - build/ios/Flapverse-iOS.zip
       - build/ios/Build/Products/**/*.app
       - build/ios/Build/Products/**/*.dSYM
       - /tmp/xcodebuild_logs/*.log
