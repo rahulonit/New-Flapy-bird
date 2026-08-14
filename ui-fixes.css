@@ -273,6 +273,18 @@ button{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}butt
 .setting-toggle.on{background:linear-gradient(#3fe92a,#13a60f)!important;border-color:#81ff69!important;box-shadow:0 0 18px #3eff31aa,inset 0 0 10px #fff5!important}.setting-toggle:not(.on){background:linear-gradient(#39506e,#172943)!important}
 .gameover-card{border-width:3px!important;box-shadow:0 0 28px #1edbff88,inset 0 0 30px #126fe944!important}.gameover-card h1{text-shadow:0 5px #075fc9,0 0 18px #35dfff!important}.reward{border:2px solid #139de8;border-radius:18px;background:#06204ccc;box-shadow:inset 0 0 16px #1686e944}.actions button{border:2px solid #4ae5ff!important;box-shadow:0 5px 0 #073a7d,0 0 14px #19ceff66!important}.actions .ad-button:disabled{border-color:#9aa8bb!important}
 @media(max-height:600px){.settings-card{gap:10px;padding:10px!important}.setting{padding:9px 14px!important}.setting>span:before{width:42px;height:42px;font-size:22px}.asset-bird{width:min(300px,29vw)!important;height:min(210px,34vh)!important}}
+
+/* Home navigation: independent rounded neon actions */
+.side-nav.panel{width:min(360px,25vw)!important;padding:0!important;gap:12px!important;overflow:visible!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important}
+.side-nav .nav-label{display:none!important}
+.side-nav button{min-height:64px!important;padding:7px 22px 7px 10px!important;gap:15px!important;border:0!important;border-radius:32px!important;background:linear-gradient(100deg,rgba(9,71,137,.96),rgba(3,22,57,.94))!important;box-shadow:0 7px 13px #001128aa,inset 0 0 20px #0a7bd544,0 0 0 2px #24d9ff!important;color:#f4fbff!important;overflow:visible!important}
+.side-nav button:before{content:'';position:absolute;inset:3px;border-radius:29px;border-top:1px solid #a0f7ff66;pointer-events:none}
+.side-nav button:hover,.side-nav button:focus-visible{transform:translateX(7px) scale(1.02)!important;background:linear-gradient(100deg,#118bdf,#062858)!important;box-shadow:0 8px 16px #001128aa,inset 0 0 22px #18a8ff66,0 0 20px #16dfff88,0 0 0 2px #70f3ff!important}
+.side-nav button:active{transform:translateX(7px) translateY(3px) scale(.99)!important}
+.side-nav .nav-icon{position:relative;z-index:1;width:48px!important;height:48px!important;min-width:48px!important;flex-basis:48px!important;border:0!important;border-radius:50%!important;background-color:transparent!important;background-size:76%!important;box-shadow:0 0 17px #21dfff99!important;filter:drop-shadow(0 2px 2px #001736) saturate(1.15)!important}
+.side-nav button span{position:relative;z-index:1;margin:0!important;font-size:clamp(12px,1.22vw,17px)!important;letter-spacing:1px!important;text-shadow:0 2px 2px #00152f,0 0 8px #20cfff55!important}
+.side-nav button i{z-index:2;right:-5px!important;top:-7px!important;width:30px;height:30px;display:grid;place-items:center;padding:0!important;border:2px solid #ff8b99;box-shadow:0 0 16px #ff324c;background:linear-gradient(#ff5062,#df1532)!important}
+@media(max-height:600px){.side-nav.panel{gap:7px!important;width:min(320px,24vw)!important}.side-nav button{min-height:51px!important;padding:4px 17px 4px 8px!important}.side-nav .nav-icon{width:40px!important;height:40px!important;min-width:40px!important;flex-basis:40px!important}}
 .character-thumb.locked .character-art{filter:grayscale(1) brightness(.45)}
 .character-thumb.locked small{color:#9fb2c8}
 .shop-empty{grid-column:1/-1;display:grid;place-items:center;min-height:120px;color:#9bc9e9;border:1px dashed #2576af;border-radius:14px}
