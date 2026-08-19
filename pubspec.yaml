@@ -1,0 +1,42 @@
+﻿name: flapverse_3d
+description: A new Flutter game project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: any
+  go_router: any
+  flame: any
+  flame_audio: any
+  freezed_annotation: any
+  json_annotation: any
+  shared_preferences: any
+  video_player: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: any
+  build_runner: any
+  freezed: any
+  json_serializable: any
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/Characters/
+    - assets/Cyber_city/
+    - assets/Font/
+    - assets/Icons/
+    - assets/Metro_city/
+    - assets/MysticForest_world_assets/
+    - assets/Ocean_Realm/
+    - assets/Profile_and_frames/
+    - assets/sound_and_music/
+    - assets/SpaceOdyssey/

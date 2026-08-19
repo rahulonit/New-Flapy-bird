@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Flapverse</string>
-    <string name="title_activity_main">Flapverse</string>
-    <string name="package_name">com.flapverse.neonflight</string>
-    <string name="custom_url_scheme">com.flapverse.neonflight</string>
-</resources>

@@ -1,25 +1,17 @@
-# Flapverse: Neon Flight
+# flapverse_3d
 
-A landscape-first, installable arcade game prototype for Android and iPhone. It is a lightweight PWA with no runtime dependencies.
+A new Flutter project.
 
-## Run locally
+## Getting Started
 
-Serve this directory over HTTP (service workers do not run from `file://`):
+This project is a starting point for a Flutter application.
 
-```powershell
-npm start
-```
+A few resources to get you started if this is your first Flutter project:
 
-Open `http://localhost:4173` on a phone or desktop browser. Rotate a phone to landscape. On Android use **Install app**; on iPhone use **Share → Add to Home Screen**.
+- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
+- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
 
-## Controls
-
-- Tap / Space / Up Arrow: flap
-- Swipe left/right / Left or Right Arrow: change lane
-- The bird travels automatically
-
-Progress, best score, and coins persist locally. The game includes home, characters, worlds, missions, shop, leaderboard, settings, gameplay, pause, and game-over screens.
-
-## Native-store packaging
-
-The web build can be wrapped with Capacitor for Play Store/App Store distribution. Native signing, store accounts, icons, screenshots, privacy metadata, and final device QA are separate release steps.
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
