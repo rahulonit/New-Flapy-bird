@@ -9,6 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="ui-fixes.css" />
+  <link rel="stylesheet" href="revamp.css" />
   <title>Flapverse: Neon Flight</title>
 </head>
 <body>
@@ -22,31 +23,32 @@
       <div class="ambient-particles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <header class="topbar">
         <button class="profile panel" data-open="characters"><span class="avatar home-avatar"></span><span><b>PLAYER ONE</b><small>LEVEL 15 · SKY PILOT</small></span></button>
-        <div class="wallet"><span class="panel currency-pill">🪙 <b data-coins>0</b></span><span class="panel currency-pill">💎 <b data-gems>0</b></span><button class="icon panel settings-entry" data-open="settings" aria-label="Open settings"><img src="assets/Icons/Setting.png" alt="" /></button></div>
+        <div class="wallet"><span class="panel currency-pill"><img src="assets/Icons/Coin.png" alt="Coins" /> <b data-coins>0</b></span><span class="panel currency-pill"><img src="assets/Icons/Dimond.png" alt="Gems" /> <b data-gems>0</b></span><button class="icon panel settings-entry" data-open="settings" aria-label="Open settings"><img src="assets/Icons/Setting.png" alt="" /></button></div>
       </header>
       <nav class="side-nav panel">
         <small class="nav-label">FLIGHT DECK</small>
-        <button data-open="missions"><b class="nav-icon">✓</b><span>Missions</span><i id="homeMissionBadge">0</i></button>
-        <button data-open="characters"><b class="nav-icon">◆</b><span>Characters</span></button>
-        <button data-open="worlds"><b class="nav-icon">◎</b><span>Worlds</span></button>
-        <button data-open="shop"><b class="nav-icon">◇</b><span>Hangar Shop</span></button>
-        <button data-open="leaderboard"><b class="nav-icon">♛</b><span>Leaderboard</span></button>
+        <button data-open="characters"><b class="nav-icon">◆</b><span>Change Avatar</span></button>
+        <button data-open="leaderboard"><b class="nav-icon">♛</b><span>Leader board</span></button>
+        <button data-open="worlds"><b class="nav-icon">◎</b><span>Change World</span></button>
+        <button data-open="shop"><b class="nav-icon">◇</b><span>Shop and Reward</span></button>
+        <button data-open="missions"><b class="nav-icon">🎯</b><span>Missions</span><i id="homeMissionBadge" class="notification" style="position:relative; right:auto; top:auto; width:20px; height:20px; font-size:10px; margin-left:auto;" hidden>0</i></button>
       </nav>
       <div class="hero">
         <div class="logo asset-logo final-logo" aria-label="Flapverse 3D"></div>
+        <img class="home-platform" src="assets/MysticForest_world_assets/gameoverbase.png" alt="" aria-hidden="true" />
         <div class="hero-bird asset-bird"></div>
-        <div class="world-status"><span>ACTIVE WORLD</span><b id="homeWorldName">METRO CITY</b></div>
+        <div class="world-status"><span>ACTIVE WORLD</span><b id="homeWorldName">METRO CITY</b><small>BEST <strong id="homeWorldBest">0</strong> · NEXT UNLOCK <strong id="homeNextUnlock">12,000</strong></small></div>
         <button id="playBtn" class="play"><small>START FLIGHT</small><b>PLAY</b><span>▶</span></button>
       </div>
-      <button class="daily panel" data-daily><i class="notification">1</i><span class="chest asset-coin-chest"></span><b>DAILY REWARD</b><small>Tap to claim</small></button>
+      <button class="daily panel" data-daily data-open="rewards"><i class="notification">1</i><span class="chest asset-coin-chest"></span><b>DAILY REWARD</b><small>Tap to view rewards</small></button>
     </section>
 
     <section id="game" class="screen">
       <canvas id="gameCanvas"></canvas>
-      <div class="hud top-left panel"><span>🏆</span><b id="score">0</b><small>BEST: <em id="best">0</em></small></div>
+      <div class="hud top-left panel"><span>★</span><b id="score">0</b><small>BEST: <em id="best">0</em></small></div>
       <div id="combo" class="combo"><small>COMBO</small><b>0</b><em>PERFECT!</em></div>
       <div id="readyCountdown" class="ready-countdown">READY</div>
-      <div class="hud top-right"><span class="panel">🪙 <b id="runCoins">0</b></span><button id="pauseBtn" class="icon panel" aria-label="Pause game"></button></div>
+      <div class="hud top-right"><span class="panel"><img src="assets/Icons/Coin.png" alt="Coins" /> <b id="runCoins">0</b></span><button id="pauseBtn" class="icon panel" aria-label="Pause game"><img src="assets/Icons/Pause.svg" alt="" /></button></div>
       <div class="hud bottom-left panel"><span>⚡</span><b id="distance">0m</b><small>FLY 2,000m</small></div>
       <div id="bossWarning" class="boss-warning">⚠ PORTAL SURGE</div>
       <div class="hint" id="hint">TAP TO FLAP • SWIPE TO CHANGE LANE</div>
@@ -54,11 +56,11 @@
     </section>
 
     <section id="gameover" class="screen overlay-screen">
-      <div class="gameover-card panel"><h1>GAME OVER</h1><div class="gameover-body"><div class="result"><small>SCORE</small><b id="finalScore">0</b><em id="newBest">NEW BEST!</em></div><div class="crashed-bird asset-gameover"></div></div><div class="reward">REWARD <b>🪙 <span id="rewardCoins">0</span></b><b>💎 <span id="rewardGems">0</span></b></div><div class="actions"><button data-home>⌂ HOME</button><button id="retryBtn" class="primary">↻ RETRY</button><button id="adBtn" class="ad-button">CLAIM BONUS <small>×2 REWARD</small></button></div></div>
+      <div class="gameover-card panel"><h1>GAME OVER</h1><div class="gameover-body"><div class="result"><small>SCORE</small><b id="finalScore">0</b><em id="newBest">NEW BEST!</em></div><div class="crashed-bird asset-gameover"></div></div><div class="reward">REWARD <b><img src="assets/Icons/Coin.png" alt="Coins" /> <span id="rewardCoins">0</span></b><b><img src="assets/Icons/Dimond.png" alt="Gems" /> <span id="rewardGems">0</span></b></div><div class="actions"><button data-home><img src="assets/Icons/back.png" alt="" /> HOME</button><button id="retryBtn" class="primary">↻ RETRY</button><button id="adBtn" class="ad-button">CLAIM BONUS <small>×2 REWARD</small></button></div></div>
     </section>
 
     <section id="panelScreen" class="screen menu-screen">
-      <header><button class="back" aria-label="Back">←</button><h1 id="panelTitle">WORLD SELECT</h1><div id="panelCurrency" class="header-currency"></div></header>
+      <header><button class="back" aria-label="Back"><img src="assets/Icons/back.png" alt="" /></button><h1 id="panelTitle">WORLD SELECT</h1><div id="panelCurrency" class="header-currency"></div></header>
       <div id="panelContent" class="panel-content"></div>
     </section>
   </main>

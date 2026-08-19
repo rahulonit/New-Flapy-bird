@@ -350,6 +350,98 @@ button{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}butt
   .character-thumb{padding-bottom:10px!important}
 }
 
+/* Modern glass design system — authoritative final theme */
+:root{
+  --modern-glass:rgba(5,20,48,.66);
+  --modern-glass-strong:rgba(5,20,48,.82);
+  --modern-stroke:rgba(112,220,255,.42);
+  --modern-stroke-soft:rgba(138,220,255,.20);
+  --modern-text:#f4f9ff;
+  --modern-muted:#9db8d2;
+  --modern-accent:#55d7ff;
+  --modern-gold:#ffc83d;
+  --modern-radius:18px;
+  --modern-gap:14px;
+  --modern-shadow:0 14px 36px rgba(0,8,27,.30),inset 0 1px 0 rgba(255,255,255,.10);
+}
+body,button{font-family:"Segoe UI",Inter,Arial,sans-serif!important;letter-spacing:0!important}
+h1,h2,h3,.side-nav button span,.mission-go,.selected-button,.actions button,.play b,.play small{font-family:"Motion Control","Segoe UI",sans-serif!important;letter-spacing:.035em!important}
+small{font-family:"Segoe UI",Inter,Arial,sans-serif!important;letter-spacing:.01em!important}
+
+.panel,:is(.world-card,.character-thumb,.mission-row,.offer-card,.coin-packs button,.settings-card,.settings-shell .setting,.total-progress,.leaderboard-list .row){
+  background:linear-gradient(135deg,rgba(18,65,112,.64),var(--modern-glass) 55%,rgba(3,13,35,.74))!important;
+  border:1px solid var(--modern-stroke)!important;
+  border-radius:var(--modern-radius)!important;
+  box-shadow:var(--modern-shadow)!important;
+  backdrop-filter:blur(18px) saturate(1.2)!important;
+  -webkit-backdrop-filter:blur(18px) saturate(1.2)!important;
+}
+button{transition:transform .16s ease,background .16s ease,border-color .16s ease,filter .16s ease!important}
+button:not(:disabled):active{transform:scale(.975)!important}
+
+/* Home: clearer hierarchy and compact glass navigation. */
+.profile,.currency-pill{background:rgba(4,18,43,.62)!important;border-color:var(--modern-stroke)!important;box-shadow:var(--modern-shadow)!important;backdrop-filter:blur(16px)!important}
+.profile{padding:7px 18px 7px 8px!important}.profile b{font-family:"Motion Control",sans-serif;font-size:clamp(18px,1.45vw,23px);letter-spacing:.04em}.profile small{color:#8fddf7!important;font-weight:650}
+.wallet{gap:10px!important}.wallet>span{min-width:130px!important;padding:10px 16px!important}.currency-pill b{font-size:clamp(18px,1.5vw,24px)}
+.side-nav.panel{padding:8px!important;gap:7px!important;background:rgba(3,16,40,.43)!important;border:1px solid rgba(92,206,255,.22)!important;border-radius:20px!important;box-shadow:0 18px 42px rgba(0,8,28,.28)!important;backdrop-filter:blur(18px) saturate(1.15)!important}
+.side-nav button{padding:6px 15px 6px 9px!important;border:1px solid transparent!important;border-radius:14px!important;background:linear-gradient(90deg,rgba(16,103,177,.42),rgba(5,26,60,.18))!important;box-shadow:none!important}
+.side-nav button:hover,.side-nav button:focus-visible{transform:translateX(4px)!important;background:linear-gradient(90deg,rgba(34,145,220,.66),rgba(5,31,68,.30))!important;border-color:rgba(90,225,255,.48)!important;box-shadow:none!important}
+.side-nav button span{font-size:clamp(17px,1.58vw,23px)!important;text-shadow:0 2px 8px #00152f!important}.side-nav .nav-icon{width:48px!important;height:48px!important;min-width:48px!important;flex-basis:48px!important;filter:drop-shadow(0 4px 6px rgba(0,10,28,.55))!important}
+.side-nav button i{width:30px!important;height:30px!important;min-width:30px!important;font:700 16px "Segoe UI",sans-serif!important;border:2px solid rgba(255,255,255,.75)!important;background:#f02f4e!important}
+.world-status{background:rgba(3,18,44,.58)!important;border:1px solid var(--modern-stroke)!important;box-shadow:var(--modern-shadow)!important;backdrop-filter:blur(14px)!important}
+
+/* Section shell and header rhythm. */
+#panelScreen{background-size:cover!important;background-position:center!important}
+#panelScreen:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(2,10,27,.36),rgba(4,14,34,.22));pointer-events:none}
+#panelScreen>header{position:relative;height:12%!important;min-height:74px!important;padding:9px max(30px,env(safe-area-inset-left))!important;gap:16px!important;border:0!important;background:rgba(3,15,38,.38)!important;box-shadow:0 1px 0 rgba(117,220,255,.20)!important;backdrop-filter:blur(16px)!important}
+#panelScreen>header h1{position:static!important;transform:none!important;margin:0!important;font-size:clamp(29px,2.8vw,42px)!important;color:var(--modern-text)!important;text-shadow:0 3px 12px rgba(0,40,110,.65)!important}
+#panelScreen>header .back,#panelScreen[data-menu="settings"]>header .back{width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important}
+#panelScreen .header-currency{margin-left:auto!important;display:flex;gap:10px}
+#panelScreen .panel-content,#panelScreen[data-menu="settings"] .panel-content{position:relative;height:88%!important;padding:16px 30px 22px!important}
+
+/* Shared compact cards. */
+:is(.world-card,.character-thumb,.mission-row,.offer-card,.coin-packs button,.settings-shell .setting,.leaderboard-list .row){padding:12px 14px!important;border-color:var(--modern-stroke-soft)!important}
+:is(.world-card,.character-thumb,.mission-row,.offer-card,.coin-packs button,.settings-shell .setting,.leaderboard-list .row):hover{border-color:rgba(96,220,255,.58)!important}
+.world-card.selected,.character-thumb.selected{border-color:rgba(255,213,67,.88)!important;box-shadow:0 0 0 1px rgba(255,211,54,.32),0 16px 34px rgba(0,8,26,.34)!important}
+.world-cards{gap:12px!important}.world-card{border-radius:20px!important}.world-card b{font-size:clamp(17px,1.45vw,23px)}.world-card small{color:var(--modern-muted)!important}
+.total-progress{padding:12px 20px!important;border-color:var(--modern-stroke-soft)!important}
+.character-info{padding:18px 34px 8px!important}.character-info h2{font-size:clamp(27px,2.7vw,39px)!important}.character-info label{border-radius:999px!important;padding:5px 14px!important}.stat{margin-top:11px!important}.character-strip{gap:12px!important;border-top-color:rgba(112,220,255,.2)!important}.character-thumb{border-radius:18px!important}
+
+/* Missions and shop use the same density and action language. */
+.mission-shell{gap:10px!important}.mission-tabs{gap:8px!important}.mission-tabs button{height:60px!important;min-height:60px!important;border:1px solid var(--modern-stroke-soft)!important;border-radius:16px!important;background:rgba(5,23,54,.60)!important;box-shadow:var(--modern-shadow)!important}.mission-tabs button.active{background:linear-gradient(135deg,rgba(25,147,217,.86),rgba(10,74,143,.72))!important;color:#fff!important;box-shadow:var(--modern-shadow)!important}.mission-tabs>span{background:rgba(3,15,36,.58)!important;border:1px solid var(--modern-stroke-soft);border-radius:14px!important;padding:9px 15px!important;backdrop-filter:blur(14px)}
+.mission-list{gap:9px!important}.mission-row{grid-template-columns:66px minmax(0,1fr) 118px 132px!important;min-height:82px!important;gap:13px!important}.mission-icon,.mission-icon .ui-asset-icon{width:58px!important;height:58px!important}.mission-row>div>b{font-size:clamp(17px,1.35vw,22px)!important}.mission-go,.offer-card button,.coin-packs small{border:1px solid rgba(255,255,255,.42)!important;border-radius:13px!important;box-shadow:0 7px 18px rgba(0,10,30,.26),inset 0 1px rgba(255,255,255,.25)!important}.mission-bonus{min-height:68px!important;border:1px solid rgba(142,108,255,.48)!important;border-radius:18px!important;background:rgba(28,25,83,.62)!important;box-shadow:var(--modern-shadow)!important;backdrop-filter:blur(16px)!important}
+.shop-shell{gap:16px!important}.shop-tabs{gap:9px!important}.shop-tabs button{min-height:52px!important;border:1px solid var(--modern-stroke-soft)!important;border-radius:15px!important;background:rgba(4,22,52,.62)!important;box-shadow:var(--modern-shadow)!important}.shop-tabs button.active{border-left:4px solid var(--modern-gold)!important;background:linear-gradient(100deg,rgba(26,137,211,.82),rgba(7,55,110,.68))!important;box-shadow:var(--modern-shadow)!important}.offer-row{gap:14px!important}.offer-card,.coin-packs button{border-radius:18px!important}
+
+/* Settings and leaderboard inherit the same glass language. */
+.settings-shell{gap:12px!important}.settings-summary{border:1px solid var(--modern-stroke)!important;border-radius:18px!important;background:linear-gradient(120deg,rgba(18,70,120,.64),rgba(4,18,44,.68))!important;box-shadow:var(--modern-shadow)!important;backdrop-filter:blur(18px)!important}.settings-summary>em{background:rgba(12,91,46,.42)!important}
+.settings-shell .settings-card{gap:12px!important}.settings-shell .setting{border-radius:18px!important;box-shadow:var(--modern-shadow)!important}.settings-shell .setting:after{display:none!important}.settings-shell .setting b{font-family:"Motion Control",sans-serif!important;letter-spacing:.03em}.settings-shell .setting small{color:var(--modern-muted)!important}
+.leaderboard-head{border:1px solid var(--modern-stroke)!important;border-radius:18px!important;background:rgba(5,22,52,.64)!important;box-shadow:var(--modern-shadow)!important;backdrop-filter:blur(16px)!important}.leaderboard-list{gap:9px!important}.leaderboard-list .you{border-color:rgba(255,211,62,.68)!important;background:linear-gradient(120deg,rgba(31,104,154,.72),rgba(8,38,79,.70))!important}
+
+/* Gameplay overlays use the same surface and typography. */
+.hud.panel,.top-right .panel,.hint,.modal-card,.gameover-card,.reward{background:rgba(4,18,44,.68)!important;border:1px solid var(--modern-stroke)!important;border-radius:18px!important;box-shadow:var(--modern-shadow)!important;backdrop-filter:blur(16px)!important}
+.modal{background:rgba(1,7,22,.66)!important;backdrop-filter:blur(8px)!important}.modal-card{padding:22px!important;gap:12px!important}.modal-card button,.actions button{border-radius:14px!important;box-shadow:var(--modern-shadow)!important}.gameover-card{border-color:var(--modern-stroke)!important}.gameover-card h1{text-shadow:0 4px 16px rgba(0,75,170,.65)!important}
+
+@media(max-height:600px){
+  :root{--modern-gap:10px;--modern-radius:15px}
+  #panelScreen>header{height:12%!important;min-height:66px!important;padding:6px 24px!important}#panelScreen .panel-content,#panelScreen[data-menu="settings"] .panel-content{height:88%!important;padding:10px 24px 15px!important}
+  #panelScreen>header .back,#panelScreen[data-menu="settings"]>header .back{width:58px!important;height:58px!important;min-width:58px!important;min-height:58px!important}
+  .mission-shell{min-height:590px!important}.mission-list{grid-template-rows:repeat(4,94px)!important}.mission-row{min-height:78px!important}
+  .character-layout,.world-layout,.settings-shell{min-height:100%!important}.shop-shell{min-height:570px!important}
+  .settings-shell{grid-template-rows:68px minmax(0,1fr)!important}.settings-shell .settings-card{grid-template-rows:repeat(2,minmax(0,1fr))!important}.settings-shell .setting{min-height:0!important;padding:9px 12px!important}.settings-shell .setting-art{width:66px!important;height:66px!important}
+}
+
+/* Reduce residual neon outlines left by older rules. */
+.mission-row,.settings-shell .setting,.character-thumb,.world-card,.offer-card,.coin-packs button,.leaderboard-list .row{border-color:rgba(104,214,255,.28)!important}
+
+/* Keep all four preferences visible without wasting vertical space. */
+#panelScreen[data-menu="settings"] .settings-shell{height:100%!important;min-height:0!important;grid-template-rows:58px minmax(0,1fr)!important;gap:10px!important}
+#panelScreen[data-menu="settings"] .settings-summary{height:58px!important;min-height:58px!important;grid-template-columns:48px minmax(0,1fr) auto!important;padding:4px 14px!important;gap:12px!important}
+#panelScreen[data-menu="settings"] .settings-summary>img{width:46px!important;height:46px!important}
+#panelScreen[data-menu="settings"] .settings-summary b{font-size:clamp(19px,1.65vw,25px)!important}#panelScreen[data-menu="settings"] .settings-summary small{font-size:12px!important}
+#panelScreen[data-menu="settings"] .settings-card{height:100%!important;min-height:0!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+#panelScreen[data-menu="settings"] .setting{height:auto!important;min-height:0!important;grid-template-columns:66px minmax(0,1fr) 112px!important;padding:8px 12px!important;gap:13px!important}
+#panelScreen[data-menu="settings"] .setting-art{width:62px!important;height:62px!important}#panelScreen[data-menu="settings"] .setting-toggle{width:108px!important;min-width:108px!important;height:44px!important;min-height:44px!important}
+
 /* Final home asset mapping. */
 .side-nav button:nth-of-type(1) .nav-icon{background-image:url('assets/Icons/Daily calender.png')!important}
 .side-nav button:nth-of-type(2) .nav-icon{background-image:url('assets/Characters/UFO.png')!important}
@@ -430,8 +522,8 @@ button{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}butt
 #panelScreen[data-menu="settings"]>header{height:10%!important;min-height:68px!important;padding-top:4px!important;padding-bottom:4px!important}
 #panelScreen[data-menu="settings"] .panel-content{height:90%!important;padding-top:10px!important}
 #panelScreen[data-menu="settings"]>header h1{font-size:clamp(27px,2.6vw,38px)!important;padding-top:4px!important;padding-bottom:4px!important}
-.settings-shell .setting-toggle{width:132px!important;height:52px!important;min-width:132px!important;background-color:transparent!important;background-image:url('assets/Icons/On-Off Switch.png')!important;background-repeat:no-repeat!important;background-size:100% 200%!important;background-position:center bottom!important;border:0!important;border-radius:0!important;box-shadow:none!important;filter:drop-shadow(0 4px 5px #00142caa)!important}
-.settings-shell .setting-toggle.on{background-color:transparent!important;background-image:url('assets/Icons/On-Off Switch.png')!important;background-position:center top!important;border:0!important;box-shadow:none!important}
+.settings-shell .setting-toggle{width:132px!important;height:52px!important;min-width:132px!important;background-color:transparent!important;background-image:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;filter:drop-shadow(0 4px 5px #00142caa)!important}
+.settings-shell .setting-toggle.on{background-color:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important}
 .settings-shell .setting-toggle i,.settings-shell .setting-toggle em{display:none!important}
 .settings-shell .setting-toggle{overflow:hidden!important;background-image:none!important}
 .settings-shell .setting-toggle.on{background-image:none!important}
@@ -476,3 +568,47 @@ button{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}butt
 .leaderboard-head{padding:12px 18px!important;border:2px solid #25d9ff!important;border-radius:20px!important;background:linear-gradient(100deg,#104d8de8,#041532ef)!important}.leaderboard-list{max-width:1050px!important}.leaderboard-list .row{min-height:58px!important;font-size:clamp(16px,1.5vw,22px)!important}
 .character-thumb .character-art{width:92px!important;height:80px!important}.shop-tabs button{border-radius:18px!important}.shop-content>h3{font-size:clamp(20px,2vw,29px)!important;letter-spacing:1px}
 @media(max-height:600px){#panelScreen>header{height:13%!important;min-height:62px!important;gap:14px!important;padding:5px 24px!important}#panelScreen>header .back{width:68px!important;height:68px!important;min-width:68px!important;min-height:68px!important}#panelScreen>header h1{font-size:clamp(27px,2.8vw,39px)!important}#panelScreen .panel-content{height:87%!important;padding:8px 24px 13px!important}:is(.world-card,.character-thumb,.mission-row,.offer-card,.coin-packs button,.leaderboard-list .row,.settings-shell .setting){padding:10px!important}#panelScreen[data-menu="settings"]>header .back{width:82px!important;height:82px!important;min-width:82px!important;min-height:82px!important}}
+
+/* Unified responsive screen pass */
+.ui-asset-icon,.currency-pill img,.top-right img,.reward img{width:30px;height:30px;object-fit:contain;vertical-align:middle;filter:drop-shadow(0 2px 3px #00152d)}
+.currency-pill{display:flex!important;align-items:center;justify-content:center;gap:8px}.currency-pill img{width:36px;height:36px}
+.back{padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}.back img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 5px #00152d)}
+.top-right .panel{display:flex;align-items:center;gap:7px}.top-right #pauseBtn img{width:58%;height:58%;filter:none}
+.reward b{display:flex;align-items:center;gap:6px}.actions [data-home]{display:flex!important;align-items:center;justify-content:center;gap:8px}.actions [data-home] img{width:30px;height:30px;object-fit:contain}
+
+/* Home must remain fully usable at every supported landscape height. */
+.home-shade{background:linear-gradient(90deg,rgba(2,13,35,.63) 0%,rgba(3,17,43,.22) 54%,rgba(2,12,31,.44) 100%)!important}
+#playBtn.play{width:min(430px,36vw)!important;height:min(250px,31vh)!important;min-height:118px!important;bottom:7%!important;background-size:contain!important}
+#playBtn.play small{font-size:clamp(14px,1.35vw,20px)!important}#playBtn.play b{font-size:clamp(38px,4.2vw,62px)!important}
+.daily.panel{width:min(330px,28vw)!important;height:min(330px,38vh)!important;min-height:150px!important;bottom:3%!important;background-size:contain!important}
+.daily b{font-size:clamp(18px,1.8vw,27px)!important}.daily small{font-size:clamp(13px,1.2vw,18px)!important}
+
+/* Every section gets a scroll-safe content viewport. */
+#panelScreen .panel-content{min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#27d9ff #06152f}
+#panelScreen .panel-content::-webkit-scrollbar{width:8px}#panelScreen .panel-content::-webkit-scrollbar-thumb{background:#27d9ff;border-radius:8px}
+.world-layout,.character-layout,.mission-shell,.shop-shell,.settings-shell{min-height:100%;height:auto!important}
+
+/* Missions: fixed rows without overlap, with asset-based iconography. */
+.mission-shell{display:grid!important;grid-template-rows:auto minmax(0,1fr) auto!important;gap:10px!important;overflow:visible!important}
+.mission-tabs{height:auto!important;min-height:66px!important}.mission-tabs button{display:flex;align-items:center;justify-content:center;gap:8px;height:66px!important}.mission-tabs button .ui-asset-icon{width:42px;height:42px}.mission-tabs>span{white-space:nowrap}
+.mission-list{display:grid!important;grid-template-rows:repeat(4,minmax(88px,1fr))!important;height:auto!important;gap:9px!important;overflow:visible!important}
+.mission-row{grid-template-columns:76px minmax(0,1fr) 130px 150px!important;min-height:88px!important;height:auto!important;gap:16px!important;padding:10px 16px!important;overflow:visible!important}
+.mission-icon{width:68px!important;height:68px!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}.mission-icon .ui-asset-icon{width:66px;height:66px;filter:drop-shadow(0 4px 5px #001730)}
+.mission-row>div{min-width:0}.mission-row>div>b{font-size:clamp(18px,1.55vw,25px)}.mission-row progress{min-width:0}.mission-row strong{display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}.mission-row strong .ui-asset-icon{width:34px;height:34px}
+.mission-go{min-width:0!important;width:100%;font-size:clamp(17px,1.5vw,24px)!important}.mission-bonus{height:auto!important;min-height:76px!important;margin:0!important;padding:8px 16px!important;justify-content:flex-start!important}.mission-bonus>span{font-size:clamp(18px,1.55vw,25px)!important;margin:0!important}.mission-bonus button{display:flex;align-items:center;justify-content:center;gap:8px;min-width:170px}.mission-bonus .ui-asset-icon{width:42px;height:42px}
+
+/* Section cards remain reachable when width or height is constrained. */
+.world-cards,.character-strip{scrollbar-width:thin;scrollbar-color:#27d9ff #06152f}.world-cards{overflow-x:auto!important;overflow-y:hidden!important}.world-card{flex:0 0 min(19%,390px)!important;min-width:250px!important}.total-progress{min-height:116px!important}
+.character-layout{min-height:680px}.character-strip{min-height:190px!important}.character-thumb{min-height:170px!important}
+.shop-shell{min-height:650px}.shop-tabs{align-content:start;position:sticky;top:0}.shop-content{overflow:visible!important}.leaderboard-list{margin:auto;width:100%}
+
+/* Use the supplied independent switch assets without sprite clipping. */
+.settings-shell .setting-toggle,.settings-shell .setting-toggle.on{background:none!important;width:150px!important;height:60px!important;overflow:visible!important;filter:none!important}
+.settings-shell .setting-toggle .switch-art{position:static!important;width:100%!important;height:100%!important;object-fit:contain!important;display:block!important;filter:none!important}
+
+@media(max-height:600px){
+  #playBtn.play{height:min(220px,29vh)!important;bottom:6%!important}.daily.panel{height:min(260px,35vh)!important;bottom:2%!important}
+  .mission-shell{min-height:640px!important}.mission-tabs{min-height:58px!important}.mission-tabs button{height:58px!important}.mission-list{grid-template-rows:repeat(4,104px)!important}.mission-bonus{min-height:72px!important}
+  .character-layout{min-height:620px!important}.world-layout{min-height:620px!important}.shop-shell{min-height:620px!important}.settings-shell{min-height:560px!important}
+  .settings-shell .setting-toggle{width:122px!important;min-width:122px!important;height:49px!important;min-height:49px!important}.settings-shell .setting{grid-template-columns:78px minmax(0,1fr) 122px!important}
+}
