@@ -5,9 +5,7 @@ import 'package:flapverse_3d/main.dart';
 
 void main() {
   testWidgets('Flapverse home screen loads', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(child: FlapverseApp()),
-    );
+    await tester.pumpWidget(const ProviderScope(child: FlapverseApp()));
     await tester.pump();
 
     expect(find.text('PLAY'), findsOneWidget);

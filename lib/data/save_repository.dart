@@ -1,4 +1,4 @@
-﻿import '../domain/player_save.dart';
+import '../domain/player_save.dart';
 
 abstract class SaveRepository {
   Future<PlayerSave> load();

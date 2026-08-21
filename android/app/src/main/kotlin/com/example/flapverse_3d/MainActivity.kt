@@ -1,4 +1,4 @@
-package com.example.flapverse_3d
+package com.flapverse.neonflight
 
 import io.flutter.embedding.android.FlutterActivity
 

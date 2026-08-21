@@ -3,6 +3,11 @@
         android:label="Flapverse 3D"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- Oppo/CPH2213 rejects Vulkan buffer format 0x38 during Flame
+             surface transitions. Use the stable OpenGL renderer instead. -->
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,9 +1,9 @@
-﻿import 'player_save.dart';
+import 'player_save.dart';
 import '../data/save_repository.dart';
 
 class EconomyService {
   final SaveRepository repository;
-  
+
   EconomyService(this.repository);
 
   Future<PlayerSave> grantCoins(int amount) async {
@@ -20,9 +20,13 @@ class EconomyService {
     return updated;
   }
 
-  Future<PlayerSave?> purchaseCharacter(String characterId, int costCoins) async {
+  Future<PlayerSave?> purchaseCharacter(
+    String characterId,
+    int costCoins,
+  ) async {
     final save = await repository.load();
-    if (save.coins >= costCoins && !save.ownedCharacterIds.contains(characterId)) {
+    if (save.coins >= costCoins &&
+        !save.ownedCharacterIds.contains(characterId)) {
       final updated = save.copyWith(
         coins: save.coins - costCoins,
         ownedCharacterIds: [...save.ownedCharacterIds, characterId],

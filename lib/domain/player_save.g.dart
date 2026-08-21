@@ -7,7 +7,7 @@ part of 'player_save.dart';
 // **************************************************************************
 
 _PlayerSave _$PlayerSaveFromJson(Map<String, dynamic> json) => _PlayerSave(
-  schemaVersion: (json['schemaVersion'] as num?)?.toInt() ?? 1,
+  schemaVersion: (json['schemaVersion'] as num?)?.toInt() ?? 6,
   coins: (json['coins'] as num?)?.toInt() ?? 0,
   gems: (json['gems'] as num?)?.toInt() ?? 0,
   selectedCharacterId: json['selectedCharacterId'] as String? ?? 'default',
@@ -22,6 +22,18 @@ _PlayerSave _$PlayerSaveFromJson(Map<String, dynamic> json) => _PlayerSave(
           ?.map((e) => e as String)
           .toList() ??
       const ['default'],
+  selectedProfileAvatarId:
+      json['selectedProfileAvatarId'] as String? ?? 'avatar_1',
+  selectedProfileFrameId:
+      json['selectedProfileFrameId'] as String? ?? 'frame_1',
+  selectedTrailId: json['selectedTrailId'] as String? ?? 'none',
+  ownedTrailIds:
+      (json['ownedTrailIds'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const ['none'],
+  shieldCount: (json['shieldCount'] as num?)?.toInt() ?? 0,
+  scoreBoosterCount: (json['scoreBoosterCount'] as num?)?.toInt() ?? 0,
   bestScore: (json['bestScore'] as num?)?.toInt() ?? 0,
   worldScores:
       (json['worldScores'] as Map<String, dynamic>?)?.map(
@@ -42,6 +54,13 @@ _PlayerSave _$PlayerSaveFromJson(Map<String, dynamic> json) => _PlayerSave(
       const [],
   dailyBonusClaimed: json['dailyBonusClaimed'] as bool? ?? false,
   lastDailyRewardDate: json['lastDailyRewardDate'] as String?,
+  lastWeeklyRewardKey: json['lastWeeklyRewardKey'] as String?,
+  lastWeeklyMissionKey: json['lastWeeklyMissionKey'] as String?,
+  weeklyMissionCounters:
+      (json['weeklyMissionCounters'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, (e as num).toInt()),
+      ) ??
+      const {},
   hapticsEnabled: json['hapticsEnabled'] as bool? ?? true,
   musicEnabled: json['musicEnabled'] as bool? ?? true,
   sfxEnabled: json['sfxEnabled'] as bool? ?? true,
@@ -57,6 +76,12 @@ Map<String, dynamic> _$PlayerSaveToJson(_PlayerSave instance) =>
       'selectedWorldId': instance.selectedWorldId,
       'ownedCharacterIds': instance.ownedCharacterIds,
       'ownedWorldIds': instance.ownedWorldIds,
+      'selectedProfileAvatarId': instance.selectedProfileAvatarId,
+      'selectedProfileFrameId': instance.selectedProfileFrameId,
+      'selectedTrailId': instance.selectedTrailId,
+      'ownedTrailIds': instance.ownedTrailIds,
+      'shieldCount': instance.shieldCount,
+      'scoreBoosterCount': instance.scoreBoosterCount,
       'bestScore': instance.bestScore,
       'worldScores': instance.worldScores,
       'totalRuns': instance.totalRuns,
@@ -65,6 +90,9 @@ Map<String, dynamic> _$PlayerSaveToJson(_PlayerSave instance) =>
       'claimedMissionIds': instance.claimedMissionIds,
       'dailyBonusClaimed': instance.dailyBonusClaimed,
       'lastDailyRewardDate': instance.lastDailyRewardDate,
+      'lastWeeklyRewardKey': instance.lastWeeklyRewardKey,
+      'lastWeeklyMissionKey': instance.lastWeeklyMissionKey,
+      'weeklyMissionCounters': instance.weeklyMissionCounters,
       'hapticsEnabled': instance.hapticsEnabled,
       'musicEnabled': instance.musicEnabled,
       'sfxEnabled': instance.sfxEnabled,

@@ -1,8 +1,14 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme.dart';
 import '../../application/providers.dart';
+import '../../domain/game_content.dart';
+import '../../domain/player_level.dart';
+import '../../domain/player_save.dart';
+import '../../domain/profile_content.dart';
+import '../profile/profile_avatar.dart';
+import 'video_background.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -10,19 +16,54 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final saveAsync = ref.watch(playerSaveProvider);
+    final save = saveAsync.value;
+    final activeWorld = worldById(save?.selectedWorldId ?? 'default');
+    final now = DateTime.now();
+    final today =
+        '${now.year.toString().padLeft(4, '0')}-'
+        '${now.month.toString().padLeft(2, '0')}-'
+        '${now.day.toString().padLeft(2, '0')}';
+    final dailyClaimed = save?.lastDailyRewardDate == today;
 
     return Scaffold(
       body: Stack(
         children: [
           // Background
           Positioned.fill(
-            child: Image.asset(
-              'assets/MysticForest_world_assets/MtsticForest.png',
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Image.asset('assets/world-atlas.png', fit: BoxFit.cover),
+            child: activeWorld.videoAsset == null
+                ? Image.asset(
+                    activeWorld.backgroundAsset,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => Image.asset(
+                      'assets/world-atlas.png',
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                : VideoBackground(
+                    key: ValueKey(activeWorld.id),
+                    assetPath: activeWorld.videoAsset!,
+                    placeholderAsset: activeWorld.backgroundAsset,
+                  ),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(gradient: GameUiDesign.screenOverlay),
             ),
           ),
-          
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: FractionallySizedBox(
+              widthFactor: 0.56,
+              child: Image.asset(
+                activeWorld.gameOverBaseAsset,
+                fit: BoxFit.fitWidth,
+                alignment: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+
           // UI Layer scaled to 1920x1080 canvas
           Positioned.fill(
             child: SafeArea(
@@ -30,139 +71,62 @@ class HomeScreen extends ConsumerWidget {
                 child: FittedBox(
                   fit: BoxFit.contain,
                   child: SizedBox(
-                    width: 1920,
-                    height: 1080,
+                    width: GameUiDesign.canvasWidth,
+                    height: GameUiDesign.canvasHeight,
                     child: Stack(
                       children: [
-                        // Left Edge Vertical Tabs
-                        Positioned(
-                          left: 0,
-                          top: 250,
-                          child: Column(
-                            children: [
-                              _buildVerticalTab('WORLDS', Icons.language, () => context.push('/worlds')),
-                              const SizedBox(height: 16),
-                              _buildVerticalTab('LEADERBOARD', Icons.leaderboard, () => context.push('/leaderboard')),
-                            ],
-                          ),
-                        ),
-                        
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 100.0, vertical: 40.0),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5.0,
+                            vertical: 40.0,
+                          ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               // Top Bar
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  _buildProfileCard(),
-                                  Image.asset(
+                              SizedBox(
+                                height: 300,
+                                child: Center(
+                                  child: Image.asset(
                                     'assets/Flapverse 3d Logo.png',
-                                    height: 200,
-                                    errorBuilder: (_, __, ___) => const SizedBox(height: 200),
+                                    height: 300,
+                                    errorBuilder: (_, _, _) =>
+                                        const SizedBox(height: 300),
                                   ),
-                                  _buildCurrencyBar(context, saveAsync),
-                                ],
+                                ),
                               ),
-                              
+
                               // Center Area
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // Left Column (Missions, Shop)
-                                  Column(
+                              Transform.translate(
+                                offset: const Offset(0, -50),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: 470,
+                                  child: Stack(
                                     children: [
-                                      _buildSidePanel(
-                                        'MISSIONS',
-                                        'assets/Icons/Daily calender.png',
-                                        badge: '3',
-                                        onTap: () => context.push('/missions'),
-                                      ),
-                                      const SizedBox(height: 24),
-                                      _buildSidePanel(
-                                        'HANGAR SHOP',
-                                        'assets/Dimond Chest.png',
-                                        badge: 'SALE',
-                                        onTap: () => context.push('/shop'),
-                                      ),
-                                    ],
-                                  ),
-                                  
-                                  const SizedBox(width: 48),
-                                  
-                                  // Center Bird Display
-                                  Container(
-                                    width: 500,
-                                    height: 500,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(32),
-                                      border: Border.all(color: AppColors.gold, width: 8),
-                                      boxShadow: [
-                                        BoxShadow(color: AppColors.gold.withOpacity(0.3), blurRadius: 40, spreadRadius: 10),
-                                      ],
-                                      image: const DecorationImage(
-                                        image: AssetImage('assets/world-atlas.png'),
-                                        fit: BoxFit.cover,
-                                        opacity: 0.5,
-                                      ),
-                                    ),
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/flying-bird-3d-flap.png',
-                                          height: 350,
-                                        ),
-                                        Positioned(
-                                          bottom: 16,
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
-                                            decoration: BoxDecoration(
-                                              color: Colors.black87,
-                                              borderRadius: BorderRadius.circular(20),
-                                              border: Border.all(color: AppColors.green, width: 2),
-                                            ),
-                                            child: const Column(
-                                              children: [
-                                                Text('ACTIVE WORLD', style: TextStyle(color: AppColors.green, fontSize: 16, fontWeight: FontWeight.bold)),
-                                                Text('MYSTIC FOREST', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                                              ],
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: SizedBox(
+                                          width: 430,
+                                          height: 420,
+                                          child: const Center(
+                                            child: _FloatingBird(
+                                              asset: 'assets/Bird.gif',
+                                              height: 235,
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  
-                                  const SizedBox(width: 48),
-                                  
-                                  // Right Column (Map, Collections)
-                                  Column(
-                                    children: [
-                                      _buildSidePanel(
-                                        'WORLD MAP',
-                                        'assets/Icons/World.png',
-                                        isLocked: true,
-                                        onTap: () => context.push('/worlds'),
-                                      ),
-                                      const SizedBox(height: 24),
-                                      _buildSidePanel(
-                                        'COLLECTIONS',
-                                        'assets/Coin Chest.png',
-                                        onTap: () => context.push('/characters'),
                                       ),
                                     ],
                                   ),
-                                ],
+                                ),
                               ),
-                              
+
                               const SizedBox(height: 24),
                             ],
                           ),
                         ),
-                        
+
                         // Bottom Area: Play Button & Daily Reward
                         Positioned(
                           bottom: 40,
@@ -176,30 +140,32 @@ class HomeScreen extends ConsumerWidget {
                                 GestureDetector(
                                   onTap: () => context.push('/play'),
                                   child: Container(
-                                    width: 600,
-                                    height: 180,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.gold,
-                                      borderRadius: BorderRadius.circular(40),
-                                      border: Border.all(color: Colors.white, width: 6),
-                                      boxShadow: [
-                                        BoxShadow(color: AppColors.gold.withOpacity(0.5), blurRadius: 20, spreadRadius: 5),
-                                      ],
-                                      gradient: LinearGradient(
-                                        colors: [AppColors.gold.withOpacity(0.8), AppColors.gold],
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                      )
-                                    ),
+                                    width: 550,
+                                    height: 145,
+                                    decoration:
+                                        GameUiDesign.homePrimaryCtaDecoration(),
                                     child: const Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        Text('START FLIGHT:', style: TextStyle(color: AppColors.background, fontSize: 24, fontWeight: FontWeight.bold)),
+                                        Text(
+                                          'START FLIGHT:',
+                                          style:
+                                              GameUiDesign.homeCtaEyebrowStyle,
+                                        ),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
-                                            Text('PLAY', style: TextStyle(color: Colors.white, fontSize: 80, fontWeight: FontWeight.bold, letterSpacing: 4)),
-                                            Icon(Icons.play_arrow, color: Colors.white, size: 80),
+                                            Text(
+                                              'PLAY',
+                                              style: GameUiDesign.homeCtaStyle,
+                                            ),
+                                            Icon(
+                                              Icons.play_arrow,
+                                              color: Colors.white,
+                                              size: 60,
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -207,34 +173,9 @@ class HomeScreen extends ConsumerWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 16),
-                                const Text('NEXT UNLOCK: CLOUD PEAKS > IN 5 DAYS', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 2)),
-                              ],
-                            ),
-                          ),
-                        ),
-                        
-                        // Daily Reward Chest
-                        Positioned(
-                          bottom: 40,
-                          right: 80,
-                          child: GestureDetector(
-                            onTap: () => context.push('/rewards'),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  'assets/Dimond Chest.png',
-                                  width: 250,
-                                  errorBuilder: (_, __, ___) => const Icon(Icons.wallet_giftcard, size: 150, color: AppColors.pink),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.surface,
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: Border.all(color: AppColors.gold, width: 2),
-                                  ),
-                                  child: const Text('DAILY REWARD:\nTAP TO CLAIM', textAlign: TextAlign.center, style: TextStyle(color: AppColors.gold, fontSize: 20, fontWeight: FontWeight.bold)),
+                                const Text(
+                                  'NEXT UNLOCK: CLOUD PEAKS > IN 5 DAYS',
+                                  style: GameUiDesign.homeFooterStyle,
                                 ),
                               ],
                             ),
@@ -247,101 +188,327 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildVerticalTab(String label, IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 64,
-        height: 250,
-        decoration: BoxDecoration(
-          color: AppColors.surface.withOpacity(0.9),
-          borderRadius: const BorderRadius.horizontal(right: Radius.circular(32)),
-          border: Border.all(color: AppColors.cyan, width: 3),
-        ),
-        child: RotatedBox(
-          quarterTurns: 3,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: Colors.white, size: 32),
-              const SizedBox(width: 16),
-              Text(label, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 4)),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildProfileCard() {
-    return Container(
-      width: 400,
-      height: 120,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(60),
-        border: Border.all(color: AppColors.gold, width: 3),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.cyan, width: 3),
-              image: const DecorationImage(image: AssetImage('assets/flying-bird-3d-flap.png'), fit: BoxFit.cover),
+          Positioned(
+            left: 5,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: SizedBox(
+                width:
+                    440 *
+                    (MediaQuery.sizeOf(context).height /
+                        GameUiDesign.canvasHeight),
+                height:
+                    632 *
+                    (MediaQuery.sizeOf(context).height /
+                        GameUiDesign.canvasHeight),
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  alignment: Alignment.centerLeft,
+                  child: _buildHomeMenuSection(context),
+                ),
+              ),
             ),
           ),
-          const SizedBox(width: 24),
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('PLAYER ONE', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold, letterSpacing: 2)),
-              Text('LEVEL 15 • SKY PILOT', style: TextStyle(color: AppColors.cyan, fontSize: 18)),
-            ],
+          Positioned(
+            left: 5,
+            top: 5,
+            width: 200,
+            height: 52,
+            child: GestureDetector(
+              onTap: () => context.push('/profile'),
+              child: FittedBox(
+                fit: BoxFit.fill,
+                child: _buildProfileCard(save),
+              ),
+            ),
+          ),
+          Positioned(
+            right: 5,
+            top: 5,
+            width: 240,
+            height: 52,
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: _buildCurrencyBar(context, saveAsync),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            bottom: 0,
+            height: MediaQuery.sizeOf(context).height * 0.40,
+            child: Semantics(
+              button: true,
+              label: dailyClaimed
+                  ? 'Daily reward claimed today'
+                  : 'Open daily reward',
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => context.push('/rewards'),
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    Image.asset(
+                      activeWorld.homeCheckAsset,
+                      height: MediaQuery.sizeOf(context).height * 0.40,
+                      fit: BoxFit.contain,
+                      errorBuilder: (_, _, _) => const Icon(
+                        Icons.wallet_giftcard,
+                        color: AppColors.pink,
+                      ),
+                    ),
+                    Positioned(
+                      right: 8,
+                      bottom: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: GameUiDesign.solidPanelDecoration(
+                          accent: AppColors.gold,
+                          radius: GameUiDesign.radiusSmall,
+                          strokeWidth: 1.5,
+                        ),
+                        child: Text(
+                          dailyClaimed
+                              ? 'DAILY REWARD\nCLAIMED TODAY'
+                              : 'DAILY REWARD\nTAP TO CLAIM',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: AppColors.gold,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCurrencyBar(BuildContext context, AsyncValue<dynamic> saveAsync) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      decoration: BoxDecoration(
-        color: AppColors.surface.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(60),
-        border: Border.all(color: AppColors.cyan, width: 3),
+  Widget _buildHomeMenuSection(BuildContext context) {
+    final items = <_HomeMenuItemData>[
+      const _HomeMenuItemData(
+        label: 'WORLD MAP',
+        asset: 'assets/Icons/World.png',
+        route: '/worlds',
       ),
+      const _HomeMenuItemData(
+        label: 'COLLECTIONS',
+        asset: 'assets/Icons/Gift box.png',
+        route: '/characters',
+      ),
+      const _HomeMenuItemData(
+        label: 'HANGAR SHOP',
+        asset: 'assets/Icons/Shop.png',
+        route: '/shop',
+        badge: 'SALE',
+      ),
+      const _HomeMenuItemData(
+        label: 'WORLDS',
+        asset: 'assets/Icons/Go.png',
+        route: '/worlds',
+      ),
+      const _HomeMenuItemData(
+        label: 'LEADERBOARD',
+        asset: 'assets/Icons/Flag.png',
+        route: '/leaderboard',
+      ),
+    ];
+
+    return SizedBox(
+      width: 440,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: items.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 1,
+          mainAxisExtent: 120,
+          mainAxisSpacing: 8,
+        ),
+        itemBuilder: (context, index) {
+          final item = items[index];
+          return _buildMenuItem(item, () => context.push(item.route));
+        },
+      ),
+    );
+  }
+
+  Widget _buildMenuItem(_HomeMenuItemData item, VoidCallback onTap) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(GameUiDesign.radiusMedium),
+        child: Ink(
+          decoration: GameUiDesign.solidPanelDecoration(
+            radius: GameUiDesign.radiusMedium,
+            strokeWidth: 2,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Row(
+                children: [
+                  SizedBox.square(
+                    dimension: 100,
+                    child: Padding(
+                      padding: const EdgeInsets.all(3),
+                      child: Image.asset(item.asset, fit: BoxFit.contain),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      item.label,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: GameUiDesign.homeMenuItemStyle,
+                    ),
+                  ),
+                ],
+              ),
+              if (item.badge != null)
+                Positioned(
+                  top: -8,
+                  right: -8,
+                  child: Container(
+                    constraints: const BoxConstraints(minWidth: 42),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.pink,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: Text(
+                      item.badge!,
+                      textAlign: TextAlign.center,
+                      style: GameUiDesign.homeMenuBadgeStyle,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileCard(PlayerSave? save) {
+    final level = PlayerLevelProgress.fromSave(save ?? const PlayerSave());
+    return Container(
+      width: 540,
+      height: 140,
+      padding: const EdgeInsets.all(12),
+      decoration: GameUiDesign.homeHeaderDecoration(),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset('assets/Coin Chest.png', width: 48, errorBuilder: (_,__,___) => const Icon(Icons.monetization_on, color: AppColors.gold, size: 48)),
-          const SizedBox(width: 16),
-          Text('${saveAsync.value?.coins ?? 0}', style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
+          ProfileAvatar(
+            avatarId: save?.selectedProfileAvatarId ?? profileAvatars.first.id,
+            frameId: save?.selectedProfileFrameId ?? profileFrames.first.id,
+            size: 110,
+          ),
           const SizedBox(width: 24),
-          const Icon(Icons.add, color: AppColors.gold, size: 32),
-          
-          const SizedBox(width: 48),
-          
-          Image.asset('assets/Dimond Chest.png', width: 48, errorBuilder: (_,__,___) => const Icon(Icons.diamond, color: AppColors.pink, size: 48)),
-          const SizedBox(width: 16),
-          Text('${saveAsync.value?.gems ?? 0}', style: const TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
-          const SizedBox(width: 24),
-          const Icon(Icons.add, color: AppColors.gold, size: 32),
-          
-          const SizedBox(width: 48),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'PLAYER ONE',
+                    style: GameUiDesign.homeHeaderPrimaryStyle,
+                  ),
+                  Text(
+                    level.level >= PlayerLevelProgress.maxLevel
+                        ? 'LEVEL ${level.level} • MAX LEVEL'
+                        : 'LEVEL ${level.level} • ${level.xpToNextLevel} XP TO NEXT',
+                    style: GameUiDesign.homeHeaderSecondaryStyle,
+                  ),
+                  const SizedBox(height: 5),
+                  SizedBox(
+                    width: 330,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: LinearProgressIndicator(
+                        value: level.progress,
+                        minHeight: 8,
+                        backgroundColor: AppColors.background,
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.cyan,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCurrencyBar(
+    BuildContext context,
+    AsyncValue<dynamic> saveAsync,
+  ) {
+    return Container(
+      width: 650,
+      height: 140,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      decoration: GameUiDesign.homeHeaderDecoration(),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildCurrencyItem(
+              asset: 'assets/Icons/Coin.png',
+              value: '${saveAsync.value?.coins ?? 0}',
+              accent: AppColors.gold,
+              fallback: Icons.monetization_on,
+            ),
+          ),
+          Container(
+            width: 1,
+            height: 80,
+            color: AppColors.border.withValues(alpha: 0.55),
+          ),
+          Expanded(
+            child: _buildCurrencyItem(
+              asset: 'assets/Icons/Dimond.png',
+              value: '${saveAsync.value?.gems ?? 0}',
+              accent: AppColors.pink,
+              fallback: Icons.diamond,
+            ),
+          ),
+          Container(
+            width: 1,
+            height: 80,
+            color: AppColors.border.withValues(alpha: 0.55),
+          ),
           IconButton(
-            iconSize: 48,
-            icon: const Icon(Icons.settings, color: Colors.white),
+            tooltip: 'Settings',
+            iconSize: 100,
+            icon: Image.asset(
+              'assets/Icons/Setting.png',
+              width: 100,
+              height: 100,
+              fit: BoxFit.contain,
+            ),
             onPressed: () => context.push('/settings'),
           ),
         ],
@@ -349,56 +516,90 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSidePanel(String title, String imageAsset, {String? badge, bool isLocked = false, VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            width: 400,
-            height: 230,
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppColors.secondarySurface.withOpacity(0.9),
-              borderRadius: BorderRadius.circular(32),
-              border: Border.all(color: AppColors.cyan, width: 4),
-              boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 10, offset: const Offset(0, 5))],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(title, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold, letterSpacing: 2)),
-                    if (isLocked) const Icon(Icons.lock, color: Colors.grey, size: 32),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: Center(
-                    child: Image.asset(imageAsset, errorBuilder: (_,__,___) => const Icon(Icons.image, size: 80, color: Colors.white54)),
-                  ),
-                ),
-              ],
-            ),
+  Widget _buildCurrencyItem({
+    required String asset,
+    required String value,
+    required Color accent,
+    required IconData fallback,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          asset,
+          width: 100,
+          height: 100,
+          fit: BoxFit.contain,
+          errorBuilder: (_, _, _) => Icon(fallback, color: accent, size: 100),
+        ),
+        const SizedBox(width: 10),
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(value, style: GameUiDesign.walletValueStyle),
           ),
-          if (badge != null)
-            Positioned(
-              top: -10,
-              right: -10,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: AppColors.pink,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                child: Text(badge, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-              ),
-            ),
-        ],
+        ),
+      ],
+    );
+  }
+}
+
+class _HomeMenuItemData {
+  const _HomeMenuItemData({
+    required this.label,
+    required this.asset,
+    required this.route,
+    this.badge,
+  });
+
+  final String label;
+  final String asset;
+  final String route;
+  final String? badge;
+}
+
+class _FloatingBird extends StatefulWidget {
+  const _FloatingBird({required this.asset, required this.height});
+
+  final String asset;
+  final double height;
+
+  @override
+  State<_FloatingBird> createState() => _FloatingBirdState();
+}
+
+class _FloatingBirdState extends State<_FloatingBird>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _motion;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 850),
+    )..repeat(reverse: true);
+    _motion = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _motion,
+      child: Image.asset(widget.asset, height: widget.height),
+      builder: (context, child) => Transform.translate(
+        offset: Offset(0, -8 + (_motion.value * 16)),
+        child: Transform.rotate(
+          angle: -0.025 + (_motion.value * 0.05),
+          child: child,
+        ),
       ),
     );
   }

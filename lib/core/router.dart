@@ -1,5 +1,4 @@
-﻿import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../features/home/home_screen.dart';
 import '../features/home/shop_screen.dart';
 import '../features/gameplay/gameplay_screen.dart';
@@ -9,22 +8,18 @@ import '../features/missions/missions_screen.dart';
 import '../features/rewards/rewards_screen.dart';
 import '../features/leaderboard/leaderboard_screen.dart';
 import '../features/settings/settings_screen.dart';
+import '../features/profile/profile_screen.dart';
 
 final router = GoRouter(
   initialLocation: '/',
   routes: [
+    GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
     GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(),
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen(),
     ),
-    GoRoute(
-      path: '/play',
-      builder: (context, state) => const GameplayScreen(),
-    ),
-    GoRoute(
-      path: '/shop',
-      builder: (context, state) => const ShopScreen(),
-    ),
+    GoRoute(path: '/play', builder: (context, state) => const GameplayScreen()),
+    GoRoute(path: '/shop', builder: (context, state) => const ShopScreen()),
     GoRoute(
       path: '/worlds',
       builder: (context, state) => const WorldSelectScreen(),
