@@ -3,6 +3,7 @@ import '../data/save_repository.dart';
 import '../data/shared_prefs_save_repository.dart';
 import '../domain/economy_service.dart';
 import '../domain/player_save.dart';
+import '../domain/level_content.dart';
 
 final saveRepositoryProvider = Provider<SaveRepository>((ref) {
   return SharedPrefsSaveRepository();
@@ -73,6 +74,7 @@ class PlayerSaveNotifier extends StateNotifier<AsyncValue<PlayerSave>> {
     return save.copyWith(
       lastWeeklyMissionKey: week,
       weeklyMissionCounters: const {},
+      claimedWeeklyMissionIds: const [],
     );
   }
 
@@ -134,6 +136,8 @@ class PlayerSaveNotifier extends StateNotifier<AsyncValue<PlayerSave>> {
     required int score,
     required int obstacles,
     int collectedCoins = 0,
+    int earnedDiamonds = 0,
+    int? levelNumber,
   }) async {
     var current = state.value;
     if (current == null) return;
@@ -154,41 +158,115 @@ class PlayerSaveNotifier extends StateNotifier<AsyncValue<PlayerSave>> {
         score > (worldScores[current.selectedWorldId] ?? 0)
         ? score
         : (worldScores[current.selectedWorldId] ?? 0);
+    final worldCompletedLevels = Map<String, int>.from(
+      current.worldCompletedLevels,
+    );
+    if (levelNumber != null && score >= levelTargetScore(levelNumber)) {
+      final completed = worldCompletedLevels[current.selectedWorldId] ?? 0;
+      final isNextUnlockedLevel = levelNumber <= completed + 1;
+      if (levelNumber > completed && isNextUnlockedLevel) {
+        worldCompletedLevels[current.selectedWorldId] = levelNumber.clamp(
+          1,
+          levelsPerWorld,
+        );
+      }
+    }
     await save(
       current.copyWith(
         bestScore: score > current.bestScore ? score : current.bestScore,
         coins: current.coins + collectedCoins,
+        gems: current.gems + earnedDiamonds,
         totalRuns: current.totalRuns + 1,
         missionCounters: counters,
         weeklyMissionCounters: weeklyCounters,
         worldScores: worldScores,
+        worldCompletedLevels: worldCompletedLevels,
       ),
     );
   }
 
+  /// Grants the extra coin copy earned from a rewarded ad without recording
+  /// another run or incrementing mission counters.
+  Future<void> grantRunBonusCoins(int coins) async {
+    final current = state.value;
+    if (current == null || coins <= 0) return;
+    await save(current.copyWith(coins: current.coins + coins));
+  }
+
+  Future<void> grantRunBonusRewards({int coins = 0, int gems = 0}) async {
+    final current = state.value;
+    if (current == null || (coins <= 0 && gems <= 0)) return;
+    await save(
+      current.copyWith(coins: current.coins + coins, gems: current.gems + gems),
+    );
+  }
+
+  Future<void> recordRewardedAdWatched() async {
+    var current = state.value;
+    if (current == null) return;
+    current = _resetWeeklyIfNeeded(_resetDailyIfNeeded(current));
+    final daily = Map<String, int>.from(current.missionCounters);
+    final weekly = Map<String, int>.from(current.weeklyMissionCounters);
+    daily['ads'] = (daily['ads'] ?? 0) + 1;
+    weekly['ads'] = (weekly['ads'] ?? 0) + 1;
+    await save(
+      current.copyWith(missionCounters: daily, weeklyMissionCounters: weekly),
+    );
+  }
+
   bool _dailyRewardTasksComplete(Map<String, int> counters) =>
-      (counters['games'] ?? 0) >= 5 &&
-      (counters['obstacles'] ?? 0) >= 10 &&
-      (counters['coins'] ?? 0) >= 30;
+      (counters['games'] ?? 0) >= 10 &&
+      (counters['obstacles'] ?? 0) >= 100 &&
+      (counters['coins'] ?? 0) >= 100;
 
   bool _weeklyRewardTasksComplete(Map<String, int> counters) =>
-      (counters['games'] ?? 0) >= 30 &&
-      (counters['obstacles'] ?? 0) >= 300 &&
-      (counters['score'] ?? 0) >= 100000 &&
-      (counters['coins'] ?? 0) >= 300;
+      (counters['games'] ?? 0) >= 200 &&
+      (counters['obstacles'] ?? 0) >= 700 &&
+      (counters['score'] ?? 0) >= 300000 &&
+      (counters['coins'] ?? 0) >= 700;
 
-  Future<bool> claimMission(String id, int target, int reward) async {
+  Future<bool> claimMission(
+    String id,
+    int target,
+    int reward, {
+    int gems = 0,
+    String? progressKey,
+  }) async {
     var current = state.value;
     if (current == null) return false;
     current = _resetDailyIfNeeded(current);
-    if ((current.missionCounters[id] ?? 0) < target ||
+    if ((current.missionCounters[progressKey ?? id] ?? 0) < target ||
         current.claimedMissionIds.contains(id)) {
       return false;
     }
     await save(
       current.copyWith(
         coins: current.coins + reward,
+        gems: current.gems + gems,
         claimedMissionIds: [...current.claimedMissionIds, id],
+      ),
+    );
+    return true;
+  }
+
+  Future<bool> claimWeeklyMission(
+    String id,
+    int target,
+    int reward, {
+    int gems = 0,
+  }) async {
+    var current = state.value;
+    if (current == null) return false;
+    current = _resetWeeklyIfNeeded(current);
+    if ((current.weeklyMissionCounters[id] ?? 0) < target ||
+        current.claimedWeeklyMissionIds.contains(id)) {
+      return false;
+    }
+    await save(
+      current.copyWith(
+        coins: current.coins + reward,
+        gems: current.gems + gems,
+        claimedWeeklyMissionIds: [...current.claimedWeeklyMissionIds, id],
       ),
     );
     return true;
@@ -319,16 +397,22 @@ class PlayerSaveNotifier extends StateNotifier<AsyncValue<PlayerSave>> {
     return true;
   }
 
-  Future<bool> purchaseCharacter(String id, {required int coins}) async {
+  Future<bool> purchaseCharacter(
+    String id, {
+    required int coins,
+    int gems = 0,
+  }) async {
     final current = state.value;
     if (current == null ||
         current.coins < coins ||
+        current.gems < gems ||
         current.ownedCharacterIds.contains(id)) {
       return false;
     }
     await save(
       current.copyWith(
         coins: current.coins - coins,
+        gems: current.gems - gems,
         ownedCharacterIds: [...current.ownedCharacterIds, id],
       ),
     );

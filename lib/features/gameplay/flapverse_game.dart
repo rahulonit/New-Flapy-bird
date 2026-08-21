@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flame/game.dart';
 import 'package:flame/components.dart';
@@ -11,6 +12,7 @@ import 'obstacles.dart';
 import '../../core/audio_service.dart';
 import '../../core/gameplay_tuning.dart';
 import '../../domain/trail_content.dart';
+import '../../domain/level_content.dart';
 import 'bird_trail.dart';
 import 'collectible_coin.dart';
 
@@ -25,6 +27,9 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   final String selectedTrailId;
   final bool hasShield;
   final bool hasScoreBooster;
+  final int levelNumber;
+  final int? targetScore;
+  final LevelDifficulty difficulty;
 
   FlapverseGame({
     required this.backgroundAsset,
@@ -35,6 +40,13 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
     required this.selectedTrailId,
     required this.hasShield,
     required this.hasScoreBooster,
+    this.levelNumber = 1,
+    this.targetScore,
+    this.difficulty = const LevelDifficulty(
+      speedMultiplier: 1,
+      gapMultiplier: 1,
+      spawnIntervalMultiplier: 1,
+    ),
   });
 
   late PlayerBird bird;
@@ -44,6 +56,7 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   bool isPlaying = false;
   bool _isShuttingDown = false;
   bool _scoreBoosterConsumed = false;
+  bool _levelCompleted = false;
 
   final ValueNotifier<int> scoreNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> comboNotifier = ValueNotifier<int>(0);
@@ -57,6 +70,7 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   );
 
   VoidCallback? onGameOver;
+  VoidCallback? onLevelComplete;
   VoidCallback? onShieldUsed;
   VoidCallback? onScoreBoosterUsed;
 
@@ -81,12 +95,16 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
       if (_isShuttingDown) return;
     }
 
-    background = await loadParallaxComponent(
+    final loadedBackground = await loadParallaxComponent(
       [ParallaxImageData(backgroundAsset.replaceFirst('assets/', ''))],
       baseVelocity: Vector2(40, 0),
       velocityMultiplierDelta: Vector2(1.5, 1.0),
+      filterQuality: FilterQuality.medium,
     );
     if (_isShuttingDown) return;
+    background = _DepthBlurParallaxComponent(
+      parallax: loadedBackground.parallax,
+    );
     add(background);
 
     birdTrail = BirdTrail(style: trailById(selectedTrailId));
@@ -129,6 +147,7 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
     shieldNotifier.value = false;
     scoreBoosterNotifier.value = false;
     _scoreBoosterConsumed = false;
+    _levelCompleted = false;
     bird.reset();
     obstacleManager.reset();
   }
@@ -156,6 +175,23 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
         : baseScore;
     comboNotifier.value += 1;
     obstaclesPassedNotifier.value += 1;
+    if (targetScore != null &&
+        scoreNotifier.value >= targetScore! &&
+        !_levelCompleted) {
+      completeLevel();
+    }
+  }
+
+  void completeLevel() {
+    if (!isPlaying || _levelCompleted) return;
+    _levelCompleted = true;
+    isPlaying = false;
+    bird.isActive = false;
+    AudioService.pauseBgm();
+    AudioService.stopAllSfx();
+    overlays.add('LevelCompleteMenu');
+    pauseEngine();
+    onLevelComplete?.call();
   }
 
   void collectCoin() {
@@ -168,6 +204,7 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
     if (!isPlaying ||
         overlays.isActive('PauseMenu') ||
         overlays.isActive('GameOverMenu') ||
+        overlays.isActive('LevelCompleteMenu') ||
         shieldNotifier.value) {
       return false;
     }
@@ -179,6 +216,7 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
     if (!isPlaying ||
         overlays.isActive('PauseMenu') ||
         overlays.isActive('GameOverMenu') ||
+        overlays.isActive('LevelCompleteMenu') ||
         scoreBoosterNotifier.value ||
         _scoreBoosterConsumed) {
       return false;
@@ -224,6 +262,7 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
     _isShuttingDown = true;
     isPlaying = false;
     onGameOver = null;
+    onLevelComplete = null;
     onShieldUsed = null;
     onScoreBoosterUsed = null;
     pauseEngine();
@@ -235,6 +274,29 @@ class FlapverseGame extends FlameGame with TapCallbacks, HasCollisionDetection {
   void onRemove() {
     shutdown();
     super.onRemove();
+  }
+}
+
+/// Keeps the moving world art softly out of focus while every interactive
+/// gameplay component added above it remains crisp. The low blur radius gives
+/// visible depth without the cost of a strong full-screen blur on mobile.
+class _DepthBlurParallaxComponent extends ParallaxComponent<FlapverseGame> {
+  _DepthBlurParallaxComponent({required super.parallax})
+    : super(priority: -100);
+
+  final Paint _depthPaint = Paint()
+    ..imageFilter = ui.ImageFilter.blur(sigmaX: 2.4, sigmaY: 2.4);
+  final Paint _atmospherePaint = Paint()
+    ..color = const Color(0x16051A3A)
+    ..blendMode = BlendMode.srcOver;
+
+  @override
+  void render(Canvas canvas) {
+    final bounds = Rect.fromLTWH(0, 0, size.x, size.y);
+    canvas.saveLayer(bounds, _depthPaint);
+    super.render(canvas);
+    canvas.restore();
+    canvas.drawRect(bounds, _atmospherePaint);
   }
 }
 
@@ -250,6 +312,23 @@ class PlayerBird extends SpriteAnimationComponent
   double _visualOffsetY = 0;
 
   final Paint _shadowPaint = Paint()..color = const Color(0x52000A28);
+  final Paint _shieldFillPaint = Paint()
+    ..style = PaintingStyle.fill
+    ..color = const Color(0x3214D9FF);
+  final Paint _shieldInnerPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2
+    ..color = const Color(0x9914D9FF);
+  final Paint _shieldOuterPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 3.5
+    ..strokeCap = StrokeCap.round
+    ..color = const Color(0xFF7EEDFF);
+  final Paint _shieldHighlightPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 5
+    ..strokeCap = StrokeCap.round
+    ..color = const Color(0xDDFFFFFF);
 
   final String asset;
 
@@ -375,12 +454,57 @@ class PlayerBird extends SpriteAnimationComponent
       ),
       _shadowPaint,
     );
+    final shieldActive = game.shieldNotifier.value;
+    final shieldCenter = Offset(size.x / 2, size.y / 2);
+    final shieldPulse = (math.sin(_flightTime * math.pi * 3) + 1) * 0.5;
+    final shieldRadius = size.x * (0.57 + shieldPulse * 0.025);
+
+    if (shieldActive) {
+      // Layered translucent circles produce an energy-bubble effect without a
+      // blur filter, keeping the effect inexpensive on older mobile GPUs.
+      canvas.drawCircle(shieldCenter, shieldRadius, _shieldFillPaint);
+      canvas.drawCircle(
+        shieldCenter,
+        shieldRadius - 5 - shieldPulse * 2,
+        _shieldInnerPaint,
+      );
+    }
     canvas.save();
     canvas.translate(size.x / 2, size.y / 2 + _visualOffsetY);
     canvas.scale(_visualScaleX, _visualScaleY);
     canvas.translate(-size.x / 2, -size.y / 2);
     super.render(canvas);
     canvas.restore();
+    if (shieldActive) {
+      final ringRect = Rect.fromCircle(
+        center: shieldCenter,
+        radius: shieldRadius,
+      );
+      canvas.drawCircle(shieldCenter, shieldRadius, _shieldOuterPaint);
+      canvas.drawArc(
+        ringRect,
+        -2.65 + shieldPulse * 0.12,
+        0.92,
+        false,
+        _shieldHighlightPaint,
+      );
+      canvas.drawArc(
+        ringRect,
+        0.35 + shieldPulse * 0.12,
+        0.48,
+        false,
+        _shieldHighlightPaint,
+      );
+      canvas.drawCircle(
+        Offset(
+          shieldCenter.dx - shieldRadius * 0.56,
+          shieldCenter.dy - shieldRadius * 0.60,
+        ),
+        3.5 + shieldPulse * 1.5,
+        _shieldHighlightPaint..style = PaintingStyle.fill,
+      );
+      _shieldHighlightPaint.style = PaintingStyle.stroke;
+    }
   }
 
   @override

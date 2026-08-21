@@ -43,7 +43,7 @@ class SettingsScreen extends ConsumerWidget {
               gems: save.gems,
               onBack: () => context.pop(),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: GameUiDesign.space4),
             Expanded(
               child: Row(
                 children: [
@@ -61,19 +61,17 @@ class SettingsScreen extends ConsumerWidget {
                         children: [
                           Image.asset('assets/Icons/Setting.png', height: 270),
                           const SizedBox(height: 28),
-                          const Text(
+                          Text(
                             'GAME SETTINGS',
                             textAlign: TextAlign.center,
                             style: GameUiDesign.cardTitleStyle,
                           ),
                           const SizedBox(height: 12),
-                          const Text(
+                          Text(
                             'Changes save automatically and apply immediately.',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: GameUiDesign.itemMetadataStyle.copyWith(
                               color: AppColors.mutedText,
-                              fontSize: 21,
-                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
@@ -187,20 +185,11 @@ class _SettingCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
+                  Text(title, style: GameUiDesign.cardHeadingStyle),
                   Text(
                     subtitle,
-                    style: const TextStyle(
+                    style: GameUiDesign.itemMetadataStyle.copyWith(
                       color: AppColors.mutedText,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],

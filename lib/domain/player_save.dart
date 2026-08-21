@@ -6,7 +6,7 @@ part 'player_save.g.dart';
 @freezed
 abstract class PlayerSave with _$PlayerSave {
   const factory PlayerSave({
-    @Default(6) int schemaVersion,
+    @Default(8) int schemaVersion,
     @Default(0) int coins,
     @Default(0) int gems,
 
@@ -25,6 +25,7 @@ abstract class PlayerSave with _$PlayerSave {
     // Stats & Scores
     @Default(0) int bestScore,
     @Default({}) Map<String, int> worldScores,
+    @Default({}) Map<String, int> worldCompletedLevels,
     @Default(0) int totalRuns,
 
     // Daily Missions & Rewards
@@ -36,6 +37,7 @@ abstract class PlayerSave with _$PlayerSave {
     String? lastWeeklyRewardKey,
     String? lastWeeklyMissionKey,
     @Default({}) Map<String, int> weeklyMissionCounters,
+    @Default([]) List<String> claimedWeeklyMissionIds,
 
     // Settings
     @Default(true) bool hapticsEnabled,

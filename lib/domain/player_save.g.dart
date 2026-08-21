@@ -7,7 +7,7 @@ part of 'player_save.dart';
 // **************************************************************************
 
 _PlayerSave _$PlayerSaveFromJson(Map<String, dynamic> json) => _PlayerSave(
-  schemaVersion: (json['schemaVersion'] as num?)?.toInt() ?? 6,
+  schemaVersion: (json['schemaVersion'] as num?)?.toInt() ?? 8,
   coins: (json['coins'] as num?)?.toInt() ?? 0,
   gems: (json['gems'] as num?)?.toInt() ?? 0,
   selectedCharacterId: json['selectedCharacterId'] as String? ?? 'default',
@@ -40,6 +40,11 @@ _PlayerSave _$PlayerSaveFromJson(Map<String, dynamic> json) => _PlayerSave(
         (k, e) => MapEntry(k, (e as num).toInt()),
       ) ??
       const {},
+  worldCompletedLevels:
+      (json['worldCompletedLevels'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, (e as num).toInt()),
+      ) ??
+      const {},
   totalRuns: (json['totalRuns'] as num?)?.toInt() ?? 0,
   lastDailyMissionDate: json['lastDailyMissionDate'] as String?,
   missionCounters:
@@ -61,6 +66,11 @@ _PlayerSave _$PlayerSaveFromJson(Map<String, dynamic> json) => _PlayerSave(
         (k, e) => MapEntry(k, (e as num).toInt()),
       ) ??
       const {},
+  claimedWeeklyMissionIds:
+      (json['claimedWeeklyMissionIds'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
   hapticsEnabled: json['hapticsEnabled'] as bool? ?? true,
   musicEnabled: json['musicEnabled'] as bool? ?? true,
   sfxEnabled: json['sfxEnabled'] as bool? ?? true,
@@ -84,6 +94,7 @@ Map<String, dynamic> _$PlayerSaveToJson(_PlayerSave instance) =>
       'scoreBoosterCount': instance.scoreBoosterCount,
       'bestScore': instance.bestScore,
       'worldScores': instance.worldScores,
+      'worldCompletedLevels': instance.worldCompletedLevels,
       'totalRuns': instance.totalRuns,
       'lastDailyMissionDate': instance.lastDailyMissionDate,
       'missionCounters': instance.missionCounters,
@@ -93,6 +104,7 @@ Map<String, dynamic> _$PlayerSaveToJson(_PlayerSave instance) =>
       'lastWeeklyRewardKey': instance.lastWeeklyRewardKey,
       'lastWeeklyMissionKey': instance.lastWeeklyMissionKey,
       'weeklyMissionCounters': instance.weeklyMissionCounters,
+      'claimedWeeklyMissionIds': instance.claimedWeeklyMissionIds,
       'hapticsEnabled': instance.hapticsEnabled,
       'musicEnabled': instance.musicEnabled,
       'sfxEnabled': instance.sfxEnabled,

@@ -40,7 +40,7 @@ const worlds = <WorldContent>[
   WorldContent(
     id: 'default',
     name: 'MYSTIC FOREST',
-    backgroundAsset: 'assets/MysticForest_world_assets/MtsticForest.png',
+    backgroundAsset: 'assets/MysticForest_world_assets/MysticForest-poster.jpg',
     cardAsset: 'assets/MysticForest_world_assets/MysticForest-poster.jpg',
     homeCheckAsset: 'assets/MysticForest_world_assets/Home check box.png',
     gameOverBaseAsset: 'assets/MysticForest_world_assets/gameoverbase.png',
@@ -105,6 +105,36 @@ const characters = <CharacterContent>[
     name: 'NEON BIRD',
     asset: 'assets/neon-bird-cutout.png',
     previewAsset: 'assets/neon-bird-cutout.png',
+  ),
+  CharacterContent(
+    id: 'nox',
+    name: 'NOX',
+    asset: 'assets/Characters/Nox.png',
+    previewAsset: 'assets/Characters/Nox.png',
+  ),
+  CharacterContent(
+    id: 'ember',
+    name: 'EMBER',
+    asset: 'assets/Characters/Ember.png',
+    previewAsset: 'assets/Characters/Ember.png',
+  ),
+  CharacterContent(
+    id: 'byte',
+    name: 'BYTE',
+    asset: 'assets/Characters/Byte.png',
+    previewAsset: 'assets/Characters/Byte.png',
+  ),
+  CharacterContent(
+    id: 'rocket',
+    name: 'ROCKET',
+    asset: 'assets/Characters/Rocket.png',
+    previewAsset: 'assets/Characters/Rocket.png',
+  ),
+  CharacterContent(
+    id: 'ufo',
+    name: 'UFO',
+    asset: 'assets/Characters/UFO.png',
+    previewAsset: 'assets/Characters/UFO.png',
   ),
 ];
 

@@ -21,12 +21,13 @@ class WorldSelectScreen extends ConsumerWidget {
         child: Column(
           children: [
             GameScreenHeader(
-              title: 'WORLD MAP',
-              subtitle: 'CHOOSE YOUR NEXT UNIVERSE',
+              title: 'SELECT WORLD',
+              subtitle: 'CHOOSE YOUR ACTIVE UNIVERSE',
+              coins: save.coins,
               gems: save.gems,
               onBack: () => context.pop(),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: GameUiDesign.space4),
             Expanded(
               child: GameScrollArea(
                 axis: Axis.horizontal,
@@ -46,9 +47,14 @@ class WorldSelectScreen extends ConsumerWidget {
                       unlocked: unlocked,
                       selected: selected,
                       onTap: unlocked
-                          ? () => ref
-                                .read(playerSaveProvider.notifier)
-                                .selectWorld(world.id)
+                          ? () async {
+                              await ref
+                                  .read(playerSaveProvider.notifier)
+                                  .selectWorld(world.id);
+                              if (context.mounted) {
+                                context.push('/levels/${world.id}');
+                              }
+                            }
                           : null,
                       onUnlock: unlocked
                           ? null
@@ -69,6 +75,9 @@ class WorldSelectScreen extends ConsumerWidget {
                                         : AppColors.pink,
                                   ),
                                 );
+                                if (success) {
+                                  context.push('/levels/${world.id}');
+                                }
                               }
                             },
                     );
@@ -147,10 +156,8 @@ class _WorldCard extends StatelessWidget {
                     Text(
                       world.name,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: GameUiDesign.cardHeadingStyle.copyWith(
                         color: unlocked ? Colors.white : Colors.grey,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     if (!unlocked) ...[
@@ -163,20 +170,19 @@ class _WorldCard extends StatelessWidget {
                         ),
                         child: const Text(
                           '💎 5,000 UNLOCK',
-                          style: TextStyle(fontSize: 18),
+                          style: GameUiDesign.itemMetadataStyle,
                         ),
                       ),
                     ],
                     const SizedBox(height: 8),
                     Text(
                       selected
-                          ? 'SELECTED'
+                          ? 'TAP FOR LEVELS'
                           : unlocked
-                          ? 'TAP TO SELECT'
+                          ? 'OPEN LEVEL MAP'
                           : 'LOCKED',
-                      style: TextStyle(
+                      style: GameUiDesign.itemMetadataStyle.copyWith(
                         color: selected ? AppColors.gold : AppColors.cyan,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],

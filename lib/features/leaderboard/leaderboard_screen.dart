@@ -34,7 +34,7 @@ class LeaderboardScreen extends ConsumerWidget {
               gems: save?.gems ?? 0,
               onBack: () => context.pop(),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: GameUiDesign.space4),
             Expanded(
               child: Row(
                 children: [
@@ -52,36 +52,27 @@ class LeaderboardScreen extends ConsumerWidget {
                         children: [
                           Image.asset('assets/Icons/Flag.png', height: 230),
                           const SizedBox(height: 24),
-                          const Text(
+                          Text(
                             'YOUR RANK',
-                            style: TextStyle(
+                            style: GameUiDesign.itemLabelStyle.copyWith(
                               color: AppColors.cyan,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
                             ),
                           ),
                           Text(
                             '#$rank',
-                            style: const TextStyle(
+                            style: GameUiDesign.screenTitleStyle.copyWith(
                               color: AppColors.gold,
-                              fontSize: 92,
-                              fontWeight: FontWeight.w900,
+                              fontSize: GameUiDesign.scoreSize,
                             ),
                           ),
                           Text(
                             _format(bestScore),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 34,
-                              fontWeight: FontWeight.w900,
-                            ),
+                            style: GameUiDesign.cardHeadingStyle,
                           ),
-                          const Text(
+                          Text(
                             'BEST SCORE',
-                            style: TextStyle(
+                            style: GameUiDesign.itemMetadataStyle.copyWith(
                               color: AppColors.mutedText,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -155,11 +146,7 @@ class _RankCard extends StatelessWidget {
             width: 110,
             child: Text(
               '#${entry.rank}',
-              style: TextStyle(
-                color: color,
-                fontSize: 38,
-                fontWeight: FontWeight.w900,
-              ),
+              style: GameUiDesign.cardHeadingStyle.copyWith(color: color),
             ),
           ),
           CircleAvatar(
@@ -175,23 +162,14 @@ class _RankCard extends StatelessWidget {
           ),
           const SizedBox(width: 22),
           Expanded(
-            child: Text(
-              entry.name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 29,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
+            child: Text(entry.name, style: GameUiDesign.cardHeadingStyle),
           ),
           Image.asset('assets/Icons/Coin.png', width: 42, height: 42),
           const SizedBox(width: 10),
           Text(
             _format(entry.score),
-            style: TextStyle(
+            style: GameUiDesign.cardHeadingStyle.copyWith(
               color: entry.player ? AppColors.gold : Colors.white,
-              fontSize: 30,
-              fontWeight: FontWeight.w900,
             ),
           ),
         ],

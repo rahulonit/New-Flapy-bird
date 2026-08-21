@@ -46,138 +46,149 @@ class _RewardsScreenState extends ConsumerState<RewardsScreen> {
     final weeklyClaimed = save?.lastWeeklyRewardKey == _weekKey(now);
     final dailyTasks = [
       _RewardTask(
-        'PLAY 5 GAMES',
+        'PLAY 10 GAMES',
         'assets/Icons/Go.png',
         save?.missionCounters['games'] ?? 0,
-        5,
-      ),
-      _RewardTask(
-        'PASS 10 OBSTACLES',
-        'assets/Icons/Flag.png',
-        save?.missionCounters['obstacles'] ?? 0,
         10,
       ),
       _RewardTask(
-        'COLLECT 30 COINS',
+        'PASS 100 OBSTACLES',
+        'assets/Icons/Flag.png',
+        save?.missionCounters['obstacles'] ?? 0,
+        100,
+      ),
+      _RewardTask(
+        'COLLECT 100 COINS',
         'assets/Icons/Coin.png',
         save?.missionCounters['coins'] ?? 0,
-        30,
+        100,
+      ),
+      _RewardTask(
+        'WATCH 10 REWARDED ADS',
+        'assets/Icons/vidoe2x.png',
+        save?.missionCounters['ads'] ?? 0,
+        10,
+        rewardId: 'ads',
+        coinReward: 100,
+        claimed: save?.claimedMissionIds.contains('ads') ?? false,
+      ),
+      _RewardTask(
+        'WATCH 20 REWARDED ADS',
+        'assets/Icons/vidoe2x.png',
+        save?.missionCounters['ads'] ?? 0,
+        20,
+        rewardId: 'ads_20',
+        progressKey: 'ads',
+        coinReward: 150,
+        gemReward: 5,
+        claimed: save?.claimedMissionIds.contains('ads_20') ?? false,
       ),
     ];
     final weeklyTasks = [
       _RewardTask(
-        'PLAY 30 GAMES',
+        'PLAY 200 GAMES',
         'assets/Icons/Go.png',
         save?.weeklyMissionCounters['games'] ?? 0,
-        30,
+        200,
       ),
       _RewardTask(
-        'PASS 300 OBSTACLES',
+        'PASS 700 OBSTACLES',
         'assets/Icons/Flag.png',
         save?.weeklyMissionCounters['obstacles'] ?? 0,
-        300,
+        700,
       ),
       _RewardTask(
-        'SCORE 100,000 POINTS',
+        'SCORE 300,000 POINTS',
         'assets/Icons/Full go with wings.png',
         save?.weeklyMissionCounters['score'] ?? 0,
-        100000,
+        300000,
       ),
       _RewardTask(
-        'COLLECT 300 COINS',
+        'COLLECT 700 COINS',
         'assets/Icons/Coin.png',
         save?.weeklyMissionCounters['coins'] ?? 0,
-        300,
+        700,
+      ),
+      _RewardTask(
+        'WATCH 140 REWARDED ADS',
+        'assets/Icons/vidoe2x.png',
+        save?.weeklyMissionCounters['ads'] ?? 0,
+        140,
+        rewardId: 'ads',
+        coinReward: 1000,
+        gemReward: 50,
+        weekly: true,
+        claimed: save?.claimedWeeklyMissionIds.contains('ads') ?? false,
       ),
     ];
-    final dailyReady = dailyTasks.every((task) => task.complete);
-    final weeklyReady = weeklyTasks.every((task) => task.complete);
+    final dailyBonusTasks = dailyTasks.where((task) => !task.individualReward);
+    final weeklyBonusTasks = weeklyTasks.where(
+      (task) => !task.individualReward,
+    );
+    final dailyReady = dailyBonusTasks.every((task) => task.complete);
+    final weeklyReady = weeklyBonusTasks.every((task) => task.complete);
     final selectedTasks = _selectedTab == 0 ? dailyTasks : weeklyTasks;
     final selectedClaimed = _selectedTab == 0 ? dailyClaimed : weeklyClaimed;
     final selectedReady = _selectedTab == 0 ? dailyReady : weeklyReady;
+    final selectedBonusTasks = _selectedTab == 0
+        ? dailyBonusTasks.toList()
+        : weeklyBonusTasks.toList();
 
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(world.backgroundAsset, fit: BoxFit.cover),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0x99020B20), Color(0xB8051A3A)],
-              ),
+      body: GameMenuShell(
+        backgroundAsset: world.backgroundAsset,
+        blurBackground: true,
+        child: Column(
+          children: [
+            _Header(
+              coins: save?.coins ?? 0,
+              gems: save?.gems ?? 0,
+              onBack: () => context.pop(),
             ),
-          ),
-          SafeArea(
-            left: false,
-            right: false,
-            child: Center(
-              child: FittedBox(
-                fit: BoxFit.fill,
-                child: SizedBox(
-                  width: GameUiDesign.canvasWidth,
-                  height: GameUiDesign.canvasHeight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(GameUiDesign.pageMargin),
-                    child: Column(
-                      children: [
-                        _Header(
-                          coins: save?.coins ?? 0,
-                          gems: save?.gems ?? 0,
-                          onBack: () => context.pop(),
-                        ),
-                        const SizedBox(height: 24),
-                        _Tabs(
-                          selected: _selectedTab,
-                          dailyAvailable: dailyReady && !dailyClaimed,
-                          weeklyAvailable: weeklyReady && !weeklyClaimed,
-                          onSelected: (tab) =>
-                              setState(() => _selectedTab = tab),
-                        ),
-                        const SizedBox(height: 24),
-                        Expanded(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              SizedBox(
-                                width: 610,
-                                child: _RewardSummary(
-                                  daily: _selectedTab == 0,
-                                  artwork: _selectedTab == 0
-                                      ? world.homeCheckAsset
-                                      : 'assets/Icons/Gift box.png',
-                                  claimed: selectedClaimed,
-                                  ready: selectedReady,
-                                  claiming: _claiming || saveAsync.isLoading,
-                                  completed: selectedTasks
-                                      .where((task) => task.complete)
-                                      .length,
-                                  total: selectedTasks.length,
-                                  onClaim: _claim,
-                                ),
-                              ),
-                              const SizedBox(width: 28),
-                              Expanded(
-                                child: _TaskList(
-                                  daily: _selectedTab == 0,
-                                  tasks: selectedTasks,
-                                  claimed: selectedClaimed,
-                                  onPlay: () => context.push('/play'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+            const SizedBox(height: GameUiDesign.space4),
+            _Tabs(
+              selected: _selectedTab,
+              dailyAvailable: dailyReady && !dailyClaimed,
+              weeklyAvailable: weeklyReady && !weeklyClaimed,
+              onSelected: (tab) => setState(() => _selectedTab = tab),
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                    width: 610,
+                    child: _RewardSummary(
+                      daily: _selectedTab == 0,
+                      artwork: _selectedTab == 0
+                          ? world.homeCheckAsset
+                          : 'assets/Icons/Gift box.png',
+                      claimed: selectedClaimed,
+                      ready: selectedReady,
+                      claiming: _claiming || saveAsync.isLoading,
+                      completed: selectedBonusTasks
+                          .where((task) => task.complete)
+                          .length,
+                      total: selectedBonusTasks.length,
+                      onClaim: _claim,
                     ),
                   ),
-                ),
+                  const SizedBox(width: 28),
+                  Expanded(
+                    child: _TaskList(
+                      daily: _selectedTab == 0,
+                      tasks: selectedTasks,
+                      claimed: selectedClaimed,
+                      onPlay: () => context.push('/play'),
+                      onClaimMission: _claimMission,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -205,6 +216,38 @@ class _RewardsScreenState extends ConsumerState<RewardsScreen> {
       ),
     );
   }
+
+  Future<void> _claimMission(_RewardTask task) async {
+    if (task.rewardId == null || _claiming) return;
+    setState(() => _claiming = true);
+    final notifier = ref.read(playerSaveProvider.notifier);
+    final granted = task.weekly
+        ? await notifier.claimWeeklyMission(
+            task.progressKey,
+            task.target,
+            task.coinReward,
+            gems: task.gemReward,
+          )
+        : await notifier.claimMission(
+            task.rewardId!,
+            task.target,
+            task.coinReward,
+            gems: task.gemReward,
+            progressKey: task.progressKey,
+          );
+    if (!mounted) return;
+    setState(() => _claiming = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          granted
+              ? '+${task.coinReward} COINS${task.gemReward > 0 ? '  +${task.gemReward} DIAMONDS' : ''}'
+              : 'MISSION REWARD IS NOT READY',
+        ),
+        backgroundColor: granted ? AppColors.green : AppColors.pink,
+      ),
+    );
+  }
 }
 
 class _Header extends StatelessWidget {
@@ -218,38 +261,12 @@ class _Header extends StatelessWidget {
   final VoidCallback onBack;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: 160,
-    child: Stack(
-      alignment: Alignment.center,
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: _RoundIconButton(onTap: onBack),
-        ),
-        const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('REWARD CENTER', style: GameUiDesign.homeHeaderPrimaryStyle),
-            Text(
-              'COMPLETE TASKS • EARN PRIZES',
-              style: GameUiDesign.homeEyebrowStyle,
-            ),
-          ],
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _Wallet(asset: 'assets/Icons/Coin.png', value: coins),
-              const SizedBox(width: 16),
-              _Wallet(asset: 'assets/Icons/Dimond.png', value: gems),
-            ],
-          ),
-        ),
-      ],
-    ),
+  Widget build(BuildContext context) => GameScreenHeader(
+    title: 'REWARD CENTER',
+    subtitle: 'COMPLETE TASKS - EARN PRIZES',
+    coins: coins,
+    gems: gems,
+    onBack: onBack,
   );
 }
 
@@ -267,12 +284,14 @@ class _Tabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    height: 88,
-    width: 720,
-    padding: const EdgeInsets.all(8),
-    decoration: GameUiDesign.solidPanelDecoration(
-      accent: AppColors.border,
-      radius: GameUiDesign.radiusPill,
+    height: 108,
+    width: 920,
+    padding: const EdgeInsets.all(7),
+    decoration: BoxDecoration(
+      color: AppColors.background.withValues(alpha: .88),
+      borderRadius: BorderRadius.circular(GameUiDesign.radiusLarge),
+      border: Border.all(color: AppColors.cyan, width: 4),
+      boxShadow: GameUiDesign.glow(AppColors.cyan),
     ),
     child: Row(
       children: [
@@ -284,7 +303,7 @@ class _Tabs extends StatelessWidget {
             dailyAvailable,
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 7),
         Expanded(
           child: _tab(
             'WEEKLY',
@@ -302,38 +321,78 @@ class _Tabs extends StatelessWidget {
     return Semantics(
       button: true,
       selected: active,
-      child: InkWell(
-        onTap: () => onSelected(value),
-        borderRadius: BorderRadius.circular(GameUiDesign.radiusPill),
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: active ? GameUiDesign.primaryGradient : null,
-            color: active ? null : AppColors.secondarySurface,
-            borderRadius: BorderRadius.circular(GameUiDesign.radiusPill),
-            border: Border.all(
-              color: active ? AppColors.cyan : AppColors.border,
-              width: 3,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => onSelected(value),
+          borderRadius: BorderRadius.circular(24),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOutCubic,
+            decoration: BoxDecoration(
+              gradient: active ? GameUiDesign.primaryGradient : null,
+              color: active ? null : AppColors.surface.withValues(alpha: .38),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: active
+                    ? AppColors.gold
+                    : AppColors.border.withValues(alpha: .5),
+                width: active ? 4 : 2,
+              ),
+              boxShadow: active ? GameUiDesign.glow(AppColors.gold) : null,
             ),
-            boxShadow: active ? GameUiDesign.glow(AppColors.cyan) : null,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(asset, width: 42, height: 42, fit: BoxFit.contain),
-              const SizedBox(width: 12),
-              Text(label, style: GameUiDesign.homeTabStyle),
-              if (available) ...[
-                const SizedBox(width: 12),
-                Container(
-                  width: 18,
-                  height: 18,
-                  decoration: const BoxDecoration(
-                    color: Colors.redAccent,
-                    shape: BoxShape.circle,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      asset,
+                      width: 52,
+                      height: 52,
+                      fit: BoxFit.contain,
+                    ),
+                    const SizedBox(width: 16),
+                    Text(
+                      '$label REWARDS',
+                      style: GameUiDesign.tabLabelStyle.copyWith(
+                        color: active ? Colors.white : AppColors.mutedText,
+                      ),
+                    ),
+                    if (available) ...[
+                      const SizedBox(width: 14),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.green,
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Text(
+                          'READY',
+                          style: GameUiDesign.itemMetadataStyle,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    width: active ? 130 : 0,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: AppColors.gold,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
                   ),
                 ),
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -430,7 +489,9 @@ class _RewardSummary extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             '$completed OF $total TASKS COMPLETE',
-            style: GameUiDesign.homeEyebrowStyle,
+            style: GameUiDesign.itemMetadataStyle.copyWith(
+              color: AppColors.green,
+            ),
           ),
           const SizedBox(height: 22),
           _ClaimButton(
@@ -451,11 +512,13 @@ class _TaskList extends StatelessWidget {
     required this.tasks,
     required this.claimed,
     required this.onPlay,
+    required this.onClaimMission,
   });
   final bool daily;
   final List<_RewardTask> tasks;
   final bool claimed;
   final VoidCallback onPlay;
+  final ValueChanged<_RewardTask> onClaimMission;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -481,11 +544,23 @@ class _TaskList extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   daily ? 'Resets every day' : 'Resets every Monday',
-                  style: const TextStyle(
+                  style: GameUiDesign.itemMetadataStyle.copyWith(
                     color: AppColors.mutedText,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
                   ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: const [
+                    _TaskTypeBadge(
+                      label: 'BONUS REQUIREMENT',
+                      color: AppColors.cyan,
+                    ),
+                    SizedBox(width: 10),
+                    _TaskTypeBadge(
+                      label: 'EXTRA REWARD',
+                      color: AppColors.purple,
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -498,27 +573,31 @@ class _TaskList extends StatelessWidget {
         ),
         const SizedBox(height: 24),
         Expanded(
-          child: Column(
-            children: [
-              for (var index = 0; index < tasks.length; index++) ...[
-                Expanded(
-                  child: _TaskCard(task: tasks[index], number: index + 1),
+          child: GameScrollArea(
+            builder: (context, controller) => ListView.separated(
+              controller: controller,
+              physics: const ClampingScrollPhysics(),
+              padding: const EdgeInsets.only(right: GameUiDesign.space3),
+              itemCount: tasks.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 16),
+              itemBuilder: (context, index) => SizedBox(
+                height: 128,
+                child: _TaskCard(
+                  task: tasks[index],
+                  number: index + 1,
+                  onClaim: () => onClaimMission(tasks[index]),
                 ),
-                if (index != tasks.length - 1) const SizedBox(height: 16),
-              ],
-            ],
+              ),
+            ),
           ),
         ),
         if (claimed) ...[
           const SizedBox(height: 18),
-          const Center(
+          Center(
             child: Text(
-              '✓ BONUS COLLECTED — COME BACK NEXT RESET',
-              style: TextStyle(
+              'BONUS COLLECTED - COME BACK NEXT RESET',
+              style: GameUiDesign.itemMetadataStyle.copyWith(
                 color: AppColors.green,
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1,
               ),
             ),
           ),
@@ -528,10 +607,38 @@ class _TaskList extends StatelessWidget {
   );
 }
 
+class _TaskTypeBadge extends StatelessWidget {
+  const _TaskTypeBadge({required this.label, required this.color});
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: .16),
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: color, width: 2),
+    ),
+    child: Text(
+      label,
+      style: GameUiDesign.itemMetadataStyle.copyWith(
+        color: color,
+        fontSize: 15,
+      ),
+    ),
+  );
+}
+
 class _TaskCard extends StatelessWidget {
-  const _TaskCard({required this.task, required this.number});
+  const _TaskCard({
+    required this.task,
+    required this.number,
+    required this.onClaim,
+  });
   final _RewardTask task;
   final int number;
+  final VoidCallback onClaim;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -577,11 +684,16 @@ class _TaskCard extends StatelessWidget {
                 children: [
                   Text(
                     'TASK $number',
-                    style: const TextStyle(
+                    style: GameUiDesign.itemMetadataStyle.copyWith(
                       color: AppColors.cyan,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w900,
                     ),
+                  ),
+                  const SizedBox(width: 10),
+                  _TaskTypeBadge(
+                    label: task.individualReward ? 'EXTRA' : 'BONUS',
+                    color: task.individualReward
+                        ? AppColors.purple
+                        : AppColors.cyan,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -589,19 +701,13 @@ class _TaskCard extends StatelessWidget {
                       task.label,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: GameUiDesign.itemLabelStyle,
                     ),
                   ),
                   Text(
                     '${task.shownCurrent} / ${task.formattedTarget}',
-                    style: TextStyle(
+                    style: GameUiDesign.itemMetadataStyle.copyWith(
                       color: task.complete ? AppColors.green : AppColors.gold,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w900,
                     ),
                   ),
                 ],
@@ -619,17 +725,80 @@ class _TaskCard extends StatelessWidget {
             ],
           ),
         ),
+        if (task.individualReward) ...[
+          const SizedBox(width: 18),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset('assets/Icons/Coin.png', width: 34, height: 34),
+              Text(
+                '${task.coinReward}',
+                style: GameUiDesign.itemMetadataStyle.copyWith(
+                  color: AppColors.gold,
+                ),
+              ),
+              if (task.gemReward > 0) ...[
+                const SizedBox(width: 8),
+                Image.asset('assets/Icons/Dimond.png', width: 32, height: 32),
+                Text(
+                  '${task.gemReward}',
+                  style: GameUiDesign.itemMetadataStyle.copyWith(
+                    color: AppColors.purple,
+                  ),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(width: 14),
+          SizedBox(
+            width: 145,
+            height: 54,
+            child: ElevatedButton(
+              onPressed: task.claimed || !task.complete ? null : onClaim,
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.green),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  task.claimed
+                      ? 'CLAIMED'
+                      : task.complete
+                      ? 'CLAIM'
+                      : 'LOCKED',
+                  style: GameUiDesign.itemMetadataStyle,
+                ),
+              ),
+            ),
+          ),
+        ],
       ],
     ),
   );
 }
 
 class _RewardTask {
-  const _RewardTask(this.label, this.asset, this.current, this.target);
+  const _RewardTask(
+    this.label,
+    this.asset,
+    this.current,
+    this.target, {
+    this.rewardId,
+    this.progressKey = 'ads',
+    this.coinReward = 0,
+    this.gemReward = 0,
+    this.weekly = false,
+    this.claimed = false,
+  });
   final String label;
   final String asset;
   final int current;
   final int target;
+  final String? rewardId;
+  final String progressKey;
+  final int coinReward;
+  final int gemReward;
+  final bool weekly;
+  final bool claimed;
+  bool get individualReward => rewardId != null;
   bool get complete => current >= target;
   double get progress => (current / target).clamp(0, 1).toDouble();
   String get shownCurrent => _format(current.clamp(0, target));
@@ -664,14 +833,7 @@ class _StatusBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: GameUiDesign.glow(color),
       ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 17,
-          fontWeight: FontWeight.w900,
-        ),
-      ),
+      child: Text(label, style: GameUiDesign.itemMetadataStyle),
     );
   }
 }
@@ -732,11 +894,7 @@ class _ClaimButton extends StatelessWidget {
                         : ready
                         ? 'CLAIM REWARD'
                         : 'COMPLETE ALL TASKS',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 27,
-                      fontWeight: FontWeight.w900,
-                    ),
+                    style: GameUiDesign.itemLabelStyle,
                   ),
                 ],
               ),
@@ -762,77 +920,14 @@ class _Prize extends StatelessWidget {
         children: [
           Text(
             value,
-            style: const TextStyle(
+            style: GameUiDesign.cardHeadingStyle.copyWith(
               color: AppColors.gold,
-              fontSize: 36,
-              fontWeight: FontWeight.w900,
             ),
           ),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1,
-            ),
-          ),
+          Text(label, style: GameUiDesign.itemMetadataStyle),
         ],
       ),
     ],
-  );
-}
-
-class _Wallet extends StatelessWidget {
-  const _Wallet({required this.asset, required this.value});
-  final String asset;
-  final int value;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    height: 104,
-    constraints: const BoxConstraints(minWidth: 220),
-    padding: const EdgeInsets.symmetric(horizontal: 20),
-    decoration: GameUiDesign.homeHeaderDecoration(),
-    child: Row(
-      children: [
-        Image.asset(asset, width: 82, height: 82),
-        const SizedBox(width: 12),
-        Text(
-          _RewardTask._format(value),
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 42,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _RoundIconButton extends StatelessWidget {
-  const _RoundIconButton({required this.onTap});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    customBorder: const CircleBorder(),
-    child: Ink(
-      width: 150,
-      height: 150,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: GameUiDesign.primaryGradient,
-        border: Border.all(color: AppColors.cyan, width: 3),
-        boxShadow: GameUiDesign.glow(AppColors.cyan),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(6),
-        child: Image.asset('assets/Icons/back.png', fit: BoxFit.contain),
-      ),
-    ),
   );
 }
 
@@ -863,14 +958,7 @@ class _MetalButton extends StatelessWidget {
         children: [
           Image.asset(asset, width: 34, height: 34, fit: BoxFit.contain),
           const SizedBox(width: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 21,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
+          Text(label, style: GameUiDesign.itemMetadataStyle),
         ],
       ),
     ),

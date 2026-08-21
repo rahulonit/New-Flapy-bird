@@ -296,7 +296,7 @@ class HomeScreen extends ConsumerWidget {
   Widget _buildHomeMenuSection(BuildContext context) {
     final items = <_HomeMenuItemData>[
       const _HomeMenuItemData(
-        label: 'WORLD MAP',
+        label: 'MAP',
         asset: 'assets/Icons/World.png',
         route: '/worlds',
       ),
@@ -314,7 +314,7 @@ class HomeScreen extends ConsumerWidget {
       const _HomeMenuItemData(
         label: 'WORLDS',
         asset: 'assets/Icons/Go.png',
-        route: '/worlds',
+        route: '/world-select',
       ),
       const _HomeMenuItemData(
         label: 'LEADERBOARD',

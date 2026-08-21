@@ -10,7 +10,9 @@ import 'collectible_coin.dart';
 class ObstacleManager extends Component with HasGameReference<FlapverseGame> {
   final Random random = Random();
   double timer = 0;
-  final double spawnInterval = GameplayTuning.obstacleSpawnInterval;
+  double get spawnInterval =>
+      GameplayTuning.obstacleSpawnInterval *
+      game.difficulty.spawnIntervalMultiplier;
 
   @override
   void update(double dt) {
@@ -29,7 +31,10 @@ class ObstacleManager extends Component with HasGameReference<FlapverseGame> {
   }
 
   void spawnObstacle() {
-    final double gapSize = game.size.y * GameplayTuning.obstacleGapHeight;
+    final double gapSize =
+        game.size.y *
+        GameplayTuning.obstacleGapHeight *
+        game.difficulty.gapMultiplier;
     final double minHeight = game.size.y * GameplayTuning.obstacleMinimumHeight;
     final double maxHeight = game.size.y - gapSize - minHeight;
     final double topHeight =
@@ -82,8 +87,12 @@ class Obstacle extends PositionComponent
   final String? asset;
   bool passed = false;
 
-  double get speed => (game.size.x * GameplayTuning.obstacleSpeedPerScreenWidth)
-      .clamp(GameplayTuning.obstacleMinSpeed, GameplayTuning.obstacleMaxSpeed);
+  double get speed =>
+      (game.size.x * GameplayTuning.obstacleSpeedPerScreenWidth).clamp(
+        GameplayTuning.obstacleMinSpeed,
+        GameplayTuning.obstacleMaxSpeed,
+      ) *
+      game.difficulty.speedMultiplier;
 
   Obstacle({
     required super.position,

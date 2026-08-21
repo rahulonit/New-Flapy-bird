@@ -189,6 +189,52 @@ abstract final class GameUiDesign {
     shadows: [Shadow(color: Color(0xCC000000), blurRadius: 6)],
   );
 
+  // Semantic typography roles shared by full-screen game interfaces.
+  // Screens should consume these roles instead of declaring local font sizes.
+  static const TextStyle screenTitleStyle = TextStyle(
+    color: AppColors.white,
+    fontSize: screenTitleSize,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 2,
+    shadows: [
+      Shadow(color: Color(0xDD000000), blurRadius: 8, offset: Offset(0, 3)),
+    ],
+  );
+
+  static const TextStyle screenSubtitleStyle = TextStyle(
+    color: AppColors.green,
+    fontSize: homeHeaderSecondarySize,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.5,
+  );
+  static const TextStyle sectionTitleStyle = homeMenuItemStyle;
+  static const TextStyle tabLabelStyle = homeHeaderSecondaryStyle;
+  static const TextStyle largeValueStyle = walletValueStyle;
+
+  static const TextStyle itemLabelStyle = TextStyle(
+    color: AppColors.white,
+    fontSize: 26,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 0.5,
+  );
+
+  static const TextStyle itemMetadataStyle = TextStyle(
+    color: AppColors.white,
+    fontSize: 22,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 0.5,
+  );
+
+  static const TextStyle cardHeadingStyle = TextStyle(
+    color: AppColors.white,
+    fontSize: cardTitleSize,
+    fontWeight: FontWeight.bold,
+    letterSpacing: 1.5,
+    shadows: [
+      Shadow(color: Color(0xDD000000), blurRadius: 8, offset: Offset(0, 3)),
+    ],
+  );
+
   static BoxDecoration homePrimaryCtaDecoration() => BoxDecoration(
     gradient: goldGradient,
     borderRadius: BorderRadius.circular(radiusLarge),
@@ -289,10 +335,12 @@ class GameMenuShell extends StatelessWidget {
     required this.child,
     super.key,
     this.backgroundAsset = 'assets/world-atlas.png',
+    this.blurBackground = false,
   });
 
   final Widget child;
   final String backgroundAsset;
+  final bool blurBackground;
 
   @override
   Widget build(BuildContext context) => Stack(
@@ -304,6 +352,13 @@ class GameMenuShell extends StatelessWidget {
         errorBuilder: (_, _, _) =>
             Image.asset('assets/world-atlas.png', fit: BoxFit.cover),
       ),
+      if (blurBackground)
+        ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: const ColoredBox(color: Color(0x22051A3A)),
+          ),
+        ),
       const DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -316,18 +371,26 @@ class GameMenuShell extends StatelessWidget {
       SafeArea(
         left: false,
         right: false,
-        child: Center(
-          child: FittedBox(
-            fit: BoxFit.fill,
-            child: SizedBox(
-              width: GameUiDesign.canvasWidth,
-              height: GameUiDesign.canvasHeight,
-              child: Padding(
-                padding: const EdgeInsets.all(GameUiDesign.pageMargin),
-                child: child,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final screenAspect = constraints.maxWidth / constraints.maxHeight;
+            final logicalWidth = screenAspect > (16 / 9)
+                ? GameUiDesign.canvasHeight * screenAspect
+                : GameUiDesign.canvasWidth;
+            return Center(
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: SizedBox(
+                  width: logicalWidth,
+                  height: GameUiDesign.canvasHeight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(GameUiDesign.pageMargin),
+                    child: child,
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     ],
@@ -351,47 +414,104 @@ class GameScreenHeader extends StatelessWidget {
   final int? gems;
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: 160,
-    child: Stack(
-      alignment: Alignment.center,
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: GameAssetIconButton(
-            asset: 'assets/Icons/back.png',
-            semanticLabel: 'Back',
-            size: 150,
-            onTap: onBack,
-          ),
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(title, style: GameUiDesign.homeHeaderPrimaryStyle),
-            if (subtitle != null)
-              Text(subtitle!, style: GameUiDesign.homeEyebrowStyle),
-          ],
-        ),
-        if (coins != null || gems != null)
+  Widget build(BuildContext context) {
+    final physicalScale =
+        MediaQuery.sizeOf(context).height / GameUiDesign.canvasHeight;
+    final controlSize = 52 / physicalScale;
+    final walletWidth = 240 / physicalScale;
+    final walletHeight = 52 / physicalScale;
+    return SizedBox(
+      height: 120,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
           Align(
-            alignment: Alignment.centerRight,
-            child: Row(
+            alignment: Alignment.topLeft,
+            child: SizedBox.square(
+              dimension: controlSize,
+              child: FittedBox(
+                fit: BoxFit.fill,
+                child: GameAssetIconButton(
+                  asset: 'assets/Icons/back.png',
+                  semanticLabel: 'Back',
+                  size: GameUiDesign.menuIconSize,
+                  onTap: onBack,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: GameUiDesign.space1),
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (coins != null)
-                  GameWalletPill(asset: 'assets/Icons/Coin.png', value: coins!),
-                if (coins != null && gems != null) const SizedBox(width: 16),
-                if (gems != null)
-                  GameWalletPill(
-                    asset: 'assets/Icons/Dimond.png',
-                    value: gems!,
-                  ),
+                Text(title, style: GameUiDesign.screenTitleStyle),
+                if (subtitle != null)
+                  Text(subtitle!, style: GameUiDesign.screenSubtitleStyle),
               ],
             ),
           ),
+          if (coins != null || gems != null)
+            Align(
+              alignment: Alignment.topRight,
+              child: SizedBox(
+                width: walletWidth,
+                height: walletHeight,
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: GameCurrencyBar(coins: coins, gems: gems),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class GameCurrencyBar extends StatelessWidget {
+  const GameCurrencyBar({super.key, this.coins, this.gems});
+
+  final int? coins;
+  final int? gems;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 650,
+    height: 140,
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+    decoration: GameUiDesign.homeHeaderDecoration(),
+    child: Row(
+      children: [
+        if (coins != null)
+          Expanded(child: _currency('assets/Icons/Coin.png', coins!)),
+        if (coins != null && gems != null)
+          Container(
+            width: 3,
+            height: 80,
+            color: AppColors.border.withValues(alpha: 0.55),
+          ),
+        if (gems != null)
+          Expanded(child: _currency('assets/Icons/Dimond.png', gems!)),
       ],
     ),
+  );
+
+  Widget _currency(String asset, int value) => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Image.asset(asset, width: 100, height: 100, fit: BoxFit.contain),
+      const SizedBox(width: GameUiDesign.space2),
+      Flexible(
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            _formatGameNumber(value),
+            style: GameUiDesign.largeValueStyle,
+          ),
+        ),
+      ),
+    ],
   );
 }
 

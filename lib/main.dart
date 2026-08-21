@@ -5,6 +5,7 @@ import 'core/theme.dart';
 import 'core/router.dart';
 import 'core/audio_service.dart';
 import 'application/providers.dart';
+import 'core/rewarded_ad_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +21,7 @@ void main() async {
 
   // Initialize audio
   await AudioService.init();
+  await RewardedAdService.initialize();
 
   runApp(const ProviderScope(child: FlapverseApp()));
 }

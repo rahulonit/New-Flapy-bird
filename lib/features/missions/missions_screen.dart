@@ -6,11 +6,18 @@ import '../../application/providers.dart';
 import '../../core/theme.dart';
 import '../../domain/game_content.dart';
 
-class MissionsScreen extends ConsumerWidget {
+class MissionsScreen extends ConsumerStatefulWidget {
   const MissionsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MissionsScreen> createState() => _MissionsScreenState();
+}
+
+class _MissionsScreenState extends ConsumerState<MissionsScreen> {
+  bool weekly = false;
+
+  @override
+  Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(playerSaveProvider.notifier).ensureDailyReset();
     });
@@ -18,7 +25,7 @@ class MissionsScreen extends ConsumerWidget {
     if (save == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    final missions = [
+    final dailyMissions = [
       _Mission(
         'games',
         'PLAY 3 GAMES',
@@ -43,7 +50,38 @@ class MissionsScreen extends ConsumerWidget {
         10000,
         500,
       ),
+      _Mission(
+        'ads',
+        'WATCH 10 REWARDED ADS',
+        'assets/Icons/vidoe2x.png',
+        save.missionCounters['ads'] ?? 0,
+        10,
+        100,
+      ),
+      _Mission(
+        'ads_20',
+        'WATCH 20 REWARDED ADS',
+        'assets/Icons/vidoe2x.png',
+        save.missionCounters['ads'] ?? 0,
+        20,
+        150,
+        rewardGems: 5,
+        progressKey: 'ads',
+      ),
     ];
+    final weeklyMissions = [
+      _Mission(
+        'ads',
+        'WATCH 140 REWARDED ADS',
+        'assets/Icons/vidoe2x.png',
+        save.weeklyMissionCounters['ads'] ?? 0,
+        140,
+        1000,
+        rewardGems: 50,
+        weekly: true,
+      ),
+    ];
+    final missions = weekly ? weeklyMissions : dailyMissions;
     final completed = missions.where((mission) => mission.complete).length;
 
     return Scaffold(
@@ -53,12 +91,17 @@ class MissionsScreen extends ConsumerWidget {
           children: [
             GameScreenHeader(
               title: 'MISSIONS',
-              subtitle: 'DAILY FLIGHT OBJECTIVES',
+              subtitle: 'DAILY & WEEKLY OBJECTIVES',
               coins: save.coins,
               gems: save.gems,
               onBack: () => context.pop(),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: GameUiDesign.space4),
+            _MissionTabs(
+              weekly: weekly,
+              onChanged: (value) => setState(() => weekly = value),
+            ),
+            const SizedBox(height: GameUiDesign.space3),
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(34),
@@ -71,25 +114,29 @@ class MissionsScreen extends ConsumerWidget {
                     Row(
                       children: [
                         Image.asset(
-                          'assets/Icons/Daily calender.png',
+                          weekly
+                              ? 'assets/Icons/Weekly calender.png'
+                              : 'assets/Icons/Daily calender.png',
                           width: 78,
                           height: 78,
                         ),
                         const SizedBox(width: 18),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'TODAY\'S MISSION BOARD',
+                                weekly
+                                    ? 'THIS WEEK\'S MISSION BOARD'
+                                    : 'TODAY\'S MISSION BOARD',
                                 style: GameUiDesign.cardTitleStyle,
                               ),
                               Text(
-                                'Complete objectives and claim coin rewards.',
-                                style: TextStyle(
+                                weekly
+                                    ? 'Resets every Monday.'
+                                    : 'Resets every day.',
+                                style: GameUiDesign.itemMetadataStyle.copyWith(
                                   color: AppColors.mutedText,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ],
@@ -97,62 +144,127 @@ class MissionsScreen extends ConsumerWidget {
                         ),
                         Text(
                           '$completed / ${missions.length} COMPLETE',
-                          style: const TextStyle(
+                          style: GameUiDesign.itemLabelStyle.copyWith(
                             color: AppColors.gold,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 24),
                     Expanded(
-                      child: Column(
-                        children: [
-                          for (
-                            var index = 0;
-                            index < missions.length;
-                            index++
-                          ) ...[
-                            Expanded(
-                              child: _MissionCard(
-                                mission: missions[index],
-                                claimed: save.claimedMissionIds.contains(
-                                  missions[index].id,
-                                ),
-                                onGo: () => context.push('/play'),
-                                onClaim: () async {
-                                  final mission = missions[index];
-                                  final success = await ref
-                                      .read(playerSaveProvider.notifier)
-                                      .claimMission(
-                                        mission.id,
-                                        mission.target,
-                                        mission.reward,
-                                      );
-                                  if (context.mounted && success) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          '+${mission.reward} COINS',
-                                        ),
-                                        backgroundColor: AppColors.green,
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                            if (index != missions.length - 1)
+                      child: GameScrollArea(
+                        builder: (context, controller) => ListView.separated(
+                          controller: controller,
+                          physics: const ClampingScrollPhysics(),
+                          padding: const EdgeInsets.only(right: 24),
+                          itemCount: missions.length,
+                          separatorBuilder: (_, _) =>
                               const SizedBox(height: 18),
-                          ],
-                        ],
+                          itemBuilder: (context, index) {
+                            final mission = missions[index];
+                            final claimed = mission.weekly
+                                ? save.claimedWeeklyMissionIds.contains(
+                                    mission.id,
+                                  )
+                                : save.claimedMissionIds.contains(mission.id);
+                            return SizedBox(
+                              height: 150,
+                              child: _MissionCard(
+                                mission: mission,
+                                claimed: claimed,
+                                onGo: () => context.push('/play'),
+                                onClaim: () => _claim(mission),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _claim(_Mission mission) async {
+    final notifier = ref.read(playerSaveProvider.notifier);
+    final success = mission.weekly
+        ? await notifier.claimWeeklyMission(
+            mission.progressKey,
+            mission.target,
+            mission.reward,
+            gems: mission.rewardGems,
+          )
+        : await notifier.claimMission(
+            mission.id,
+            mission.target,
+            mission.reward,
+            gems: mission.rewardGems,
+            progressKey: mission.progressKey,
+          );
+    if (!mounted || !success) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '+${mission.reward} COINS${mission.rewardGems > 0 ? '  +${mission.rewardGems} DIAMONDS' : ''}',
+        ),
+        backgroundColor: AppColors.green,
+      ),
+    );
+  }
+}
+
+class _MissionTabs extends StatelessWidget {
+  const _MissionTabs({required this.weekly, required this.onChanged});
+  final bool weekly;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 720,
+    height: 90,
+    padding: const EdgeInsets.all(7),
+    decoration: GameUiDesign.solidPanelDecoration(
+      accent: AppColors.cyan,
+      radius: GameUiDesign.radiusPill,
+    ),
+    child: Row(
+      children: [
+        Expanded(
+          child: _tab(false, 'DAILY', 'assets/Icons/Daily calender.png'),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _tab(true, 'WEEKLY', 'assets/Icons/Weekly calender.png'),
+        ),
+      ],
+    ),
+  );
+
+  Widget _tab(bool value, String label, String asset) {
+    final active = weekly == value;
+    return InkWell(
+      onTap: () => onChanged(value),
+      borderRadius: BorderRadius.circular(GameUiDesign.radiusPill),
+      child: Ink(
+        decoration: BoxDecoration(
+          gradient: active ? GameUiDesign.primaryGradient : null,
+          borderRadius: BorderRadius.circular(GameUiDesign.radiusPill),
+          border: Border.all(
+            color: active ? AppColors.gold : AppColors.border,
+            width: active ? 4 : 2,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(asset, width: 46, height: 46),
+            const SizedBox(width: 14),
+            Text(label, style: GameUiDesign.tabLabelStyle),
           ],
         ),
       ),
@@ -196,14 +308,7 @@ class _MissionCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  mission.label,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
+                Text(mission.label, style: GameUiDesign.cardHeadingStyle),
                 const SizedBox(height: 14),
                 Row(
                   children: [
@@ -224,10 +329,8 @@ class _MissionCard extends StatelessWidget {
                       child: Text(
                         '${mission.shownCurrent} / ${mission.formattedTarget}',
                         textAlign: TextAlign.right,
-                        style: const TextStyle(
+                        style: GameUiDesign.itemMetadataStyle.copyWith(
                           color: AppColors.cyan,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900,
                         ),
                       ),
                     ),
@@ -243,12 +346,21 @@ class _MissionCard extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 '${mission.reward}',
-                style: const TextStyle(
+                style: GameUiDesign.itemLabelStyle.copyWith(
                   color: AppColors.gold,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w900,
                 ),
               ),
+              if (mission.rewardGems > 0) ...[
+                const SizedBox(width: 14),
+                Image.asset('assets/Icons/Dimond.png', width: 42, height: 42),
+                const SizedBox(width: 6),
+                Text(
+                  '${mission.rewardGems}',
+                  style: GameUiDesign.itemLabelStyle.copyWith(
+                    color: AppColors.purple,
+                  ),
+                ),
+              ],
             ],
           ),
           const SizedBox(width: 28),
@@ -272,10 +384,7 @@ class _MissionCard extends StatelessWidget {
                     : mission.complete
                     ? 'CLAIM'
                     : 'GO',
-                style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: GameUiDesign.itemLabelStyle,
               ),
             ),
           ),
@@ -292,14 +401,20 @@ class _Mission {
     this.asset,
     this.current,
     this.target,
-    this.reward,
-  );
+    this.reward, {
+    this.rewardGems = 0,
+    this.weekly = false,
+    String? progressKey,
+  }) : progressKey = progressKey ?? id;
   final String id;
   final String label;
   final String asset;
   final int current;
   final int target;
   final int reward;
+  final int rewardGems;
+  final bool weekly;
+  final String progressKey;
   bool get complete => current >= target;
   double get progress => (current / target).clamp(0, 1).toDouble();
   String get shownCurrent => _format(current.clamp(0, target));

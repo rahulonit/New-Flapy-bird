@@ -27,16 +27,19 @@ class _VideoBackgroundState extends State<VideoBackground> {
   VideoPlayerController _createController() =>
       VideoPlayerController.asset(widget.assetPath);
 
-  void _initializeController() {
+  Future<void> _initializeController() async {
     final controller = _controller;
-    controller
-      ..setLooping(true)
-      ..setVolume(0)
-      ..initialize().then((_) {
-        if (!mounted || !identical(_controller, controller)) return;
-        setState(() {});
-        controller.play();
-      });
+    try {
+      await controller.setLooping(true);
+      await controller.setVolume(0);
+      await controller.initialize();
+      if (!mounted || !identical(_controller, controller)) return;
+      setState(() {});
+      await controller.play();
+    } catch (_) {
+      // Native video is unavailable in widget tests and on a few transient
+      // lifecycle states. The thumbnail remains visible as the safe fallback.
+    }
   }
 
   @override
